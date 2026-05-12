@@ -1,0 +1,79 @@
+# Scry dev stack.
+#
+# Security posture: open mode (LAN-only, no token) — same default as
+# rosbridge / foxglove_bridge. The connect will reject any caller outside
+# loopback / RFC1918 unless `--public-internet` is set.
+#
+# To require a token instead:
+#   docker exec scry-connect scry-connect pair
+#
+# That prints a QR; scan it with the Android app to pair, then restart
+# the container with `command: scry-connect --token` (uncomment line
+# below).
+#
+# Usage:
+#   cd robot-setup
+#   docker compose -f docker-compose.dev.yml up --build         # first time
+#   docker compose -f docker-compose.dev.yml up                 # subsequent
+#
+#   # GUI turtlesim (opt-in — mounts your X socket):
+#   xhost +local:docker
+#   docker compose -f docker-compose.dev.yml -f docker-compose.gui.yml up
+
+x-common: &common
+  image: scry-dev:latest
+  build:
+    context: ..
+    dockerfile: robot-setup/Dockerfile.dev
+  network_mode: host
+  # Share PID namespace with the host so `ros_list_nodes_with_resources`
+  # can match each ROS node to its OS pid via /proc.
+  pid: host
+  environment: &common-env
+    ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-42}"
+    RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+    # Uncomment for strict localhost-only DDS during single-host development:
+    # ROS_LOCALHOST_ONLY: "1"
+
+services:
+  # ── Connect: MCP server the Android app connects to ──
+  scry-connect:
+    <<: *common
+    container_name: scry-connect
+    environment:
+      <<: *common-env
+      SCRY_PORT: "5339"
+      QT_QPA_PLATFORM: offscreen
+      SCRY_AUDIT_LOG: "/root/.local/state/scry/audit.jsonl"
+    volumes:
+      - ../scry-connect:/opt/scry-connect
+      - scry_config:/root/.config/scry
+      - scry_state:/root/.local/state/scry
+    command: >
+      bash -lc "
+        set -e &&
+        python3 -m pip install -q -e /opt/scry-connect &&
+        echo '=== scry-connect starting on :5339 (open mode, LAN-only) ===' &&
+        exec scry-connect --host 0.0.0.0 --port 5339
+      "
+    # Want token mode? Comment the line above and use:
+    #   exec scry-connect --host 0.0.0.0 --port 5339 --token
+    restart: unless-stopped
+
+  turtlesim:
+    <<: *common
+    container_name: turtlesim
+    environment:
+      <<: *common-env
+      QT_QPA_PLATFORM: offscreen
+    command: >
+      bash -lc "
+        ros2 run turtlesim turtlesim_node
+      "
+    restart: unless-stopped
+    depends_on:
+      - scry-connect
+
+volumes:
+  scry_config:
+  scry_state:

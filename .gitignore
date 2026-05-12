@@ -1,0 +1,65 @@
+# Shared .gitignore baseline. Each repo extends this with its own
+# language/toolchain-specific entries (Python in scry-connect,
+# Gradle/Android in scry-android, etc.)
+
+# ── OS / editor noise ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+\#*\#
+.\#*
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# ── Build / dependency artefacts ──────────────────────────────────
+node_modules/
+.cache/
+.tmp/
+.temp/
+*.log
+logs/
+
+# ── Secrets — NEVER commit ────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+secrets/
+credentials/
+
+# ── Test / coverage ───────────────────────────────────────────────
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+.nyc_output/
+*.lcov
+
+# ── Misc ──────────────────────────────────────────────────────────
+*.orig
+*.bak
+*.rej

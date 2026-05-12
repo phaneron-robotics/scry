@@ -1,0 +1,289 @@
+# Scry full-stack sim: Gazebo + TurtleBot3 + scry-connect.
+#
+# What you get:
+#   - A TurtleBot3 (burger, by default) driving in a Gazebo world.
+#   - Real ROS 2 topics: /scan (lidar), /camera/image_raw, /odom, /tf,
+#     /cmd_vel, /imu, /joint_states.
+#   - Synthetic GPS on /gps/fix (sensor_msgs/NavSatFix) — derived from
+#     /odom + a configurable datum lat/lon. Drives the GPS / GeoMap viz
+#     section in the app.
+#   - Synthetic environment + power + perception sensors: /battery /range /temperature
+#     /humidity /pressure /illuminance /magnetic_field /wrench /joy +
+#     a clean /imu_fake. Drives every
+#     Sensors viz section's panel renderers.
+#   - scry-connect on :5339 — point the Scry app at this host:5339.
+#   - Optional: SLAM Toolbox or Cartographer mapping, Nav2 navigation,
+#     teleop_twist_keyboard for manual driving.
+#
+# Quick start:
+#   xhost +local:docker                                    # allow GUI
+#   cd robot-setup
+#   docker compose -f docker-compose.sim.yml build         # ~30–45 min, ~7 GB
+#
+#   # Full autonomous mapping run (sim + connect + SLAM + Nav2 + frontier
+#   # explorer + RViz). The robot drives itself around and the map fills in:
+#   docker compose -f docker-compose.sim.yml up
+#
+#   # …or just sim + connect if you want to teleop manually:
+#   docker compose -f docker-compose.sim.yml up sim connect
+#   docker exec -it scry-sim /opt/scry-sim/teleop.sh
+#
+#   # …or kick off SLAM by hand:
+#   docker exec -it scry-sim /opt/scry-sim/slam.sh
+#
+#   # …or kick off frontier exploration by hand (needs slam + nav running):
+#   docker exec -it scry-sim /opt/scry-sim/explore.sh
+#
+# Worlds:
+#   TURTLEBOT3_WORLD (default) — small enclosed obstacle course
+#   HOUSE                      — multi-room indoor scene (good for SLAM)
+#   EMPTY                      — flat plane (fast startup, basic motion test)
+#
+#   Override with:  WORLD=HOUSE docker compose -f docker-compose.sim.yml up
+#
+# Models:
+#   burger | waffle | waffle_pi    (TURTLEBOT3_MODEL env var)
+#
+# ROS_DOMAIN_ID is fixed at 0 across all services so they share the DDS bus.
+
+x-common: &common
+  image: scry-sim:latest
+  build:
+    context: ..
+    dockerfile: robot-setup/Dockerfile.sim
+  network_mode: host
+  ipc: host
+  # `pid: host` shares the host PID namespace with the container, which lets
+  # the connect's `ros_list_nodes_with_resources` tool walk /proc to find the
+  # OS pid + RSS for every ROS node — including ones running outside the
+  # connect's container. Without this, the Processes view in the Scry app
+  # can only see scry-connect itself.
+  pid: host
+  privileged: true
+  environment: &common-env
+    ROS_DOMAIN_ID: "${ROS_DOMAIN_ID:-0}"
+    RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+    TURTLEBOT3_MODEL: "${TURTLEBOT3_MODEL:-waffle}"
+    WORLD: "${WORLD:-TURTLEBOT3_WORLD}"
+    # Use Gazebo's /clock for SLAM, Nav2, RViz, and scry-connect so
+    # timestamps line up across nodes. The connect's internal rclpy node
+    # picks this up via the USE_SIM_TIME env var (see ros_connect.py) and
+    # declares `use_sim_time=true` at startup, which makes hz/delay
+    # measurements and TF lookups consistent with the rest of the stack.
+    USE_SIM_TIME: "true"
+    DISPLAY: "${DISPLAY:-:0}"
+    QT_X11_NO_MITSHM: "1"
+    XDG_RUNTIME_DIR: /tmp/runtime-root
+    LIBGL_ALWAYS_SOFTWARE: "${LIBGL_ALWAYS_SOFTWARE:-0}"
+  volumes: &common-volumes
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
+    - ../scry-connect:/opt/scry-connect
+    - ./sim:/opt/scry-sim
+    - sim_state:/root/.ros
+
+services:
+  # ── Gazebo + TurtleBot3 simulation ──
+  # Launches Gazebo Harmonic with the chosen world + a spawned TurtleBot3.
+  # Publishes /scan, /odom, /camera/image_raw, /cmd_vel, /tf etc. on the
+  # default ROS_DOMAIN_ID so the connect picks them up.
+  sim:
+    <<: *common
+    container_name: scry-sim
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        /opt/scry-sim/launch-world.sh
+      "
+    restart: unless-stopped
+
+  # ── Scry connect — what the Android app connects to ──
+  # Same default posture as the dev compose: open mode, LAN-only.
+  connect:
+    <<: *common
+    container_name: scry-connect-sim
+    environment:
+      <<: *common-env
+      SCRY_PORT: "5339"
+      QT_QPA_PLATFORM: offscreen
+      SCRY_AUDIT_LOG: "/root/.local/state/scry/audit.jsonl"
+      # NVIDIA Container Toolkit driver injection. Both vars are no-ops
+      # unless the host has the toolkit installed and `runtime: nvidia`
+      # is uncommented below — keeping them here means flipping GPU on
+      # is a one-line change.
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: utility,compute
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
+      - ../scry-connect:/opt/scry-connect
+      - ./sim:/opt/scry-sim
+      - scry_config:/root/.config/scry
+      - scry_state:/root/.local/state/scry
+      # System-stats visibility: let the connect's System and Docker cards
+      # introspect the host.
+      #
+      # Docker: bind-mount the daemon socket + the CLI. The connect user
+      # inside the container needs to be able to write to docker.sock —
+      # since this service runs as root (privileged: true), that's
+      # already the case. Result: the dashboard's Docker card lists
+      # containers running on the host.
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker:ro
+      #
+      # GPU stats: requires the NVIDIA Container Toolkit on the host.
+      # If the toolkit isn't installed, this container will fail to
+      # start with `unknown or invalid runtime name: nvidia` — comment
+      # the line back out, or install with:
+      #   sudo apt install -y nvidia-container-toolkit
+      #   sudo nvidia-ctk runtime configure --runtime=docker
+      #   sudo systemctl restart docker
+    runtime: nvidia
+    command: >
+      bash -lc "
+        set -e &&
+        /opt/scry-venv/bin/pip install -q -e /opt/scry-connect &&
+        echo '=== scry-connect starting on :5339 (open mode, LAN-only) ===' &&
+        exec /opt/scry-venv/bin/scry-connect --host 0.0.0.0 --port 5339
+      "
+    depends_on:
+      - sim
+    restart: unless-stopped
+
+  # ── SLAM Toolbox — starts by default ──
+  # Builds /map online while you teleop. Drive with:
+  #   docker exec -it scry-sim /opt/scry-sim/teleop.sh
+  slam:
+    <<: *common
+    container_name: scry-sim-slam
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 5 &&
+        /opt/scry-sim/slam.sh
+      "
+    depends_on:
+      - sim
+    restart: unless-stopped
+
+  # ── Nav2 — starts by default, uses live SLAM (no pre-built map) ──
+  # Send goal poses from the Scry app or rviz2's "2D Goal Pose" tool.
+  # Set MAP=/path/to/map.yaml to use a pre-built map instead of SLAM.
+  nav:
+    <<: *common
+    container_name: scry-sim-nav
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 10 &&
+        /opt/scry-sim/nav.sh
+      "
+    depends_on:
+      - sim
+      - slam
+    restart: unless-stopped
+
+  # ── Synthetic GPS publisher ──
+  # TurtleBot3 has no GPS sensor, so this sidecar reads /odom and synthesises
+  # a `sensor_msgs/NavSatFix` stream on /gps/fix. Datum lat/lon defaults to
+  # downtown San Francisco; override with GPS_LAT / GPS_LON env vars (e.g.
+  # `GPS_LAT=51.5074 GPS_LON=-0.1278 docker compose ... up gps` for London).
+  # Drive the robot in Gazebo / teleop and watch the GPS section's trail
+  # follow the path on the OSM basemap.
+  gps:
+    <<: *common
+    container_name: scry-sim-gps
+    environment:
+      <<: *common-env
+      GPS_TOPIC: "${GPS_TOPIC:-/gps/fix}"
+      GPS_RATE: "${GPS_RATE:-5}"
+      GPS_LAT: "${GPS_LAT:-37.7916}"
+      GPS_LON: "${GPS_LON:--122.3993}"
+      GPS_ALT: "${GPS_ALT:-15.0}"
+      GPS_SIGMA_H: "${GPS_SIGMA_H:-1.5}"
+      GPS_SIGMA_V: "${GPS_SIGMA_V:-3.0}"
+      GPS_NO_ODOM: "${GPS_NO_ODOM:-0}"
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 6 &&
+        /opt/scry-sim/gps.sh
+      "
+    depends_on:
+      - sim
+    restart: unless-stopped
+
+  # ── Synthetic environment + power sensors ──
+  # The TurtleBot3 sim only publishes IMU + LaserScan + Camera + Odom. To
+  # exercise the Sensors viz section's other panel kinds (BatteryState,
+  # Range, Temperature, RelativeHumidity, FluidPressure, Illuminance) we
+  # run a tiny rclpy node that synthesises all seven streams with mildly
+  # interesting dynamics — slow battery discharge, drifting humidity,
+  # sweeping illuminance through indoor → daylight, and an occasional
+  # out-of-range range pulse so the panel's red-clamp shows up.
+  #
+  # Topics (override via SENSORS_*_TOPIC env vars):
+  #   /imu_fake     /battery     /range     /temperature
+  #   /humidity     /pressure    /illuminance
+  #
+  # The TB3 sim's real `/imu` keeps publishing alongside; the picker offers
+  # both so you can compare a "noisy real" IMU against a clean fake one.
+  sensors:
+    <<: *common
+    container_name: scry-sim-sensors
+    environment:
+      <<: *common-env
+      SENSORS_RATE: "${SENSORS_RATE:-10}"
+      SENSORS_BATTERY_MINUTES: "${SENSORS_BATTERY_MINUTES:-10}"
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 4 &&
+        /opt/scry-sim/sensors.sh
+      "
+    depends_on:
+      - sim
+    restart: unless-stopped
+
+  # ── Frontier exploration — drives the robot around to build a map ──
+  # explore_lite (m-explore-ros2) watches /map, picks the nearest
+  # unexplored frontier, and pushes goals to Nav2's NavigateToPose
+  # action. The robot self-drives until the map is closed.
+  #
+  # Sleeps long enough for sim → slam → nav lifecycle activation; if the
+  # node logs "Waiting for the map" or "Action server not available",
+  # bump the sleep or restart this service after Nav2 is fully up.
+  explore:
+    <<: *common
+    container_name: scry-sim-explore
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 20 &&
+        /opt/scry-sim/explore.sh
+      "
+    depends_on:
+      - sim
+      - slam
+      - nav
+    restart: unless-stopped
+
+  # ── RViz — starts by default ──
+  # Pre-configured view: lidar scan, camera, tf, map, odometry.
+  rviz:
+    <<: *common
+    container_name: scry-sim-rviz
+    command: >
+      bash -lc "
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        sleep 8 &&
+        /opt/scry-sim/rviz.sh
+      "
+    depends_on:
+      - sim
+    restart: unless-stopped
+
+volumes:
+  sim_state:
+  scry_config:
+  scry_state:

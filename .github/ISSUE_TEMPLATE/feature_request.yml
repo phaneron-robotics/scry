@@ -1,0 +1,62 @@
+name: Feature request
+description: Suggest a new capability or improvement
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion! The clearer the problem statement,
+        the more likely we are to find a good solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem?
+      description: |
+        Describe the situation you're in and what's painful about it.
+        Don't lead with a proposed solution — start with the pain.
+      placeholder: |
+        When I have 5 robots on the same LAN, the radar gets crowded and
+        it's hard to tell which is which.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Your proposed solution (optional)
+      description: If you have an idea, share it. If not, leave blank — we'll figure something out together.
+      placeholder: |
+        Maybe show the hostname under each blip instead of just an IP suffix.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      placeholder: |
+        I tried renaming each robot manually but that's per-device state.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component
+      options:
+        - Android app
+        - scry-connect (Python server)
+        - Both
+        - Documentation
+        - Other / cross-cutting
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirms
+    attributes:
+      label: Before submitting
+      options:
+        - label: I have searched existing issues and didn't find a duplicate
+          required: true

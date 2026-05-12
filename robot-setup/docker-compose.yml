@@ -1,0 +1,13 @@
+services:
+  scry-connect:
+    build: .
+    network_mode: host
+    # `pid: host` so `ros_list_nodes_with_resources` can walk /proc to find
+    # the OS pids backing each ROS node. Without it, the Processes view in
+    # the Scry app only sees the connect itself.
+    pid: host
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+      - SCRY_PORT=${SCRY_PORT:-5339}
+    restart: unless-stopped

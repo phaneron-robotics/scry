@@ -1,0 +1,14 @@
+[Unit]
+Description=Scry Connect (MCP server for ROS 2)
+After=network-online.target
+
+[Service]
+Type=simple
+# Edit ROS_DISTRO to match your install
+Environment="ROS_DISTRO=humble"
+ExecStart=/bin/bash -c 'source /opt/ros/${ROS_DISTRO}/setup.bash && exec scry-connect'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

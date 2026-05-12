@@ -1,0 +1,49 @@
+# EditorConfig — https://editorconfig.org
+# Top-most config file for the repository.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Markdown — preserve trailing whitespace (two-space line breaks)
+[*.md]
+trim_trailing_whitespace = false
+indent_size = 2
+
+# Web / JS / TS / JSON / YAML — 2-space convention
+[*.{js,jsx,ts,tsx,json,yml,yaml,html,css,scss,vue,svelte}]
+indent_size = 2
+
+# Kotlin / Java — 4 spaces (Android default)
+[*.{kt,kts,java}]
+indent_size = 4
+
+# Python — 4 spaces (PEP 8)
+[*.py]
+indent_size = 4
+
+# Gradle
+[*.{gradle,gradle.kts}]
+indent_size = 4
+
+# Shell scripts
+[*.{sh,bash}]
+indent_size = 4
+
+# Makefile — requires real tabs
+[Makefile]
+indent_style = tab
+
+# Go — gofmt uses tabs
+[*.go]
+indent_style = tab
+
+# XML (Android resources, manifests)
+[*.xml]
+indent_size = 4
