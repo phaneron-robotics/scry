@@ -78,7 +78,13 @@ x-common: &common
   volumes: &common-volumes
     - /tmp/.X11-unix:/tmp/.X11-unix:rw
     - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
-    - ../scry-connect:/opt/scry-connect
+    # `../../scry-connect` because the compose file lives in
+    # `repos/scry/robot-setup/`, so `..` is `repos/scry/` and the
+    # scry-connect sibling repo is at `repos/scry-connect/`. If this
+    # ever resolves to an empty/missing directory, Docker silently
+    # creates one (as root) and the bind mount succeeds but with no
+    # source files — colcon then can't find the package.xml inside.
+    - ../../scry-connect:/opt/scry-connect
     - ./sim:/opt/scry-sim
     - sim_state:/root/.ros
 
@@ -116,7 +122,13 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority:ro
-      - ../scry-connect:/opt/scry-connect
+      # `../../scry-connect` because the compose file lives in
+      # `repos/scry/robot-setup/`, so `..` is `repos/scry/` and the
+      # scry-connect sibling repo is at `repos/scry-connect/`. If this
+      # ever resolves to an empty/missing directory, Docker silently
+      # creates one (as root) and the bind mount succeeds but with no
+      # source files — colcon then can't find the package.xml inside.
+      - ../../scry-connect:/opt/scry-connect
       - ./sim:/opt/scry-sim
       - scry_config:/root/.config/scry
       - scry_state:/root/.local/state/scry
