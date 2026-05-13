@@ -160,19 +160,21 @@ services:
     # qrcode, zeroconf, pillow, psutil) still come via pip — colcon
     # only knows about the package.xml ROS deps. We install them into
     # the system Python (the one ROS uses) so they coexist with rclpy.
-    # The `|` (literal) block-scalar preserves every newline verbatim,
-    # then bash treats each line ending in `&&` as a continuation. The
-    # earlier `>` (folded) scalar collapsed indented lines to literal
-    # newlines, which broke long commands wrapped across multiple
-    # lines (pip install would get no args, ros2 launch would split
-    # off port:= as a separate command). Using `|` + explicit `\` for
-    # line continuations is the robust shape.
+    # `|` (literal) block-scalar preserves every newline verbatim, then
+    # bash runs each line as its own command. With `set -e`, any failure
+    # exits immediately.
+    #
+    # Don't try backslash line-continuations here: the layering of YAML
+    # parsing + double-quoted `bash -lc "..."` argument + bash's own
+    # line-continuation rules has historically produced the wrong shape
+    # (we observed `\<newline>` being rendered as literal `<newline>`,
+    # which split commands in half). Putting each command on one line
+    # is brittleness-proof, even if it makes some lines longer.
     command: |
       bash -lc "
         set -e
         echo '=== Installing scry-connect Python runtime deps ==='
-        /usr/bin/python3 -m pip install --break-system-packages --quiet \
-            mcp uvicorn starlette sse-starlette qrcode zeroconf pillow psutil
+        /usr/bin/python3 -m pip install --break-system-packages --quiet mcp uvicorn starlette sse-starlette qrcode zeroconf pillow psutil
         echo '=== Building scry-connect as a colcon package ==='
         source /opt/ros/jazzy/setup.bash
         mkdir -p /tmp/scry_ws/src
@@ -181,9 +183,7 @@ services:
         colcon build --packages-select scry_connect --symlink-install
         source install/setup.bash
         echo '=== Launching scry-connect via ros2 launch on :5339 ==='
-        exec ros2 launch scry_connect scry_connect_launch.xml \
-            port:=5339 \
-            host:=0.0.0.0
+        exec ros2 launch scry_connect scry_connect_launch.xml port:=5339 host:=0.0.0.0
       "
     depends_on:
       - sim
