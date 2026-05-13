@@ -139,12 +139,44 @@ services:
       #   sudo nvidia-ctk runtime configure --runtime=docker
       #   sudo systemctl restart docker
     runtime: nvidia
+    # ── How scry-connect comes alive inside this container ──
+    #
+    # The bind-mounted source at /opt/scry-connect is a proper ROS 2
+    # ament_python package (package.xml, setup.py, launch/, config/,
+    # resource/). We build it the way `apt install ros-jazzy-scry-connect`
+    # would land it on a real robot: as a colcon workspace, sourced like
+    # any other ROS package, launched with `ros2 launch`.
+    #
+    # Why this is better than the old `pip install -e .` path:
+    #   - Validates the path that real users will use after we publish
+    #     to packages.ros.org. If colcon-build breaks here, it breaks
+    #     for them too.
+    #   - Source is symlink-installed (--symlink-install) so editing
+    #     scry_connect/*.py on the host applies immediately — no
+    #     rebuild needed for Python-only changes.
+    #   - Single source of truth for launch args (the .launch.xml).
+    #
+    # Python runtime deps (mcp, uvicorn, starlette, sse-starlette,
+    # qrcode, zeroconf, pillow, psutil) still come via pip — colcon
+    # only knows about the package.xml ROS deps. We install them into
+    # the system Python (the one ROS uses) so they coexist with rclpy.
     command: >
       bash -lc "
         set -e &&
-        /opt/scry-venv/bin/pip install -q -e /opt/scry-connect &&
-        echo '=== scry-connect starting on :5339 (open mode, LAN-only) ===' &&
-        exec /opt/scry-venv/bin/scry-connect --host 0.0.0.0 --port 5339
+        echo '=== Installing scry-connect Python runtime deps ===' &&
+        /usr/bin/python3 -m pip install --break-system-packages --quiet
+          mcp uvicorn starlette sse-starlette qrcode zeroconf pillow psutil &&
+        echo '=== Building scry-connect as a colcon package ===' &&
+        source /opt/ros/jazzy/setup.bash &&
+        mkdir -p /tmp/scry_ws/src &&
+        ln -sfn /opt/scry-connect /tmp/scry_ws/src/scry_connect &&
+        cd /tmp/scry_ws &&
+        colcon build --packages-select scry_connect --symlink-install &&
+        source install/setup.bash &&
+        echo '=== Launching scry-connect via ros2 launch on :5339 ===' &&
+        exec ros2 launch scry_connect scry_connect_launch.xml
+          port:=5339
+          host:=0.0.0.0
       "
     depends_on:
       - sim
