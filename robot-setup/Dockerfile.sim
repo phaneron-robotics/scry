@@ -94,6 +94,56 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libgl1-mesa-dri \
     && rm -rf /var/lib/apt/lists/*
 
+# ── GPU acceleration stack (CuPy + CUDA runtime libs) ─────────────
+# Enables scry-connect's hexagonal imaging port to pick the CuPy codec at
+# startup. Without this layer the codec falls back to PIL (CPU) and the
+# log reports `hardware=cuda` but `codec=pil`.
+#
+# Two pieces are needed and both are missing from osrf/ros:jazzy-desktop-full:
+#
+#   1. cupy-cuda12x (Python). Installed into /usr/local/lib/python3.12/dist-
+#      packages with --target so it shadows the debian numpy 1.26 with
+#      numpy 2.x (cupy 14 requires numpy >= 2). This dist-packages dir is
+#      earlier on the system Python's sys.path than the apt-installed
+#      /usr/lib/python3/dist-packages, so the override is automatic.
+#
+#   2. CUDA toolkit runtime libs (libnvrtc, libcudart, libcublas). The
+#      driver is injected at container start by `runtime: nvidia` but the
+#      toolkit isn't. Without libnvrtc CuPy fails to JIT-compile kernels.
+#      We install from NVIDIA's official apt repo and register the
+#      install path with ldconfig so the dynamic linker finds the libs.
+#
+# This whole layer is a no-op on hosts without an NVIDIA GPU — the
+# container can still start (the libs just sit on disk unused) and the
+# runtime probe correctly reports `kind=cpu`. Skip at build time by
+# passing `--build-arg SCRY_GPU=cpu`.
+ARG SCRY_GPU=auto
+RUN if [ "${SCRY_GPU}" != "cpu" ]; then \
+        set -e ; \
+        echo "=== Installing NVIDIA CUDA apt repo ===" ; \
+        wget -q https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb ; \
+        dpkg -i cuda-keyring_1.1-1_all.deb ; \
+        rm cuda-keyring_1.1-1_all.deb ; \
+        apt-get update -qq ; \
+        echo "=== Installing CUDA runtime libs (NVRTC + CUDART + cuBLAS) ===" ; \
+        apt-get install -y --no-install-recommends \
+            cuda-nvrtc-12-6 \
+            cuda-cudart-12-6 \
+            libcublas-12-6 ; \
+        rm -rf /var/lib/apt/lists/* ; \
+        echo "/usr/local/cuda-12.6/targets/x86_64-linux/lib" > /etc/ld.so.conf.d/cuda-12.6.conf ; \
+        ldconfig ; \
+        echo "=== Installing cupy-cuda12x (Python, into /usr/local) ===" ; \
+        /usr/bin/python3 -m pip install \
+            --break-system-packages \
+            --target=/usr/local/lib/python3.12/dist-packages \
+            cupy-cuda12x ; \
+        echo "=== Sanity check ===" ; \
+        /usr/bin/python3 -c "import cupy; print('cupy', cupy.__version__, 'wheel OK')" ; \
+    else \
+        echo "SCRY_GPU=cpu, skipping GPU stack install"; \
+    fi
+
 # ── Python venv for scry-connect ──────────────────────────────────
 # Ubuntu Noble (PEP 668) marks system Python as externally-managed and
 # the apt-shipped pip 24 can't be upgraded in place. We create a venv with
