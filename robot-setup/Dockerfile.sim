@@ -99,8 +99,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # startup. Without this layer the codec falls back to PIL (CPU) and the
 # log reports `hardware=cuda` but `codec=pil`.
 #
-# Three pieces are needed and all three are missing from
-# osrf/ros:jazzy-desktop-full:
+# Two pieces are needed and both are missing from osrf/ros:jazzy-desktop-full:
 #
 #   1. cupy-cuda12x (Python). Installed into /usr/local/lib/python3.12/dist-
 #      packages with --target so it shadows the debian numpy 1.26 with
@@ -108,18 +107,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #      earlier on the system Python's sys.path than the apt-installed
 #      /usr/lib/python3/dist-packages, so the override is automatic.
 #
-#   2. scipy >= 1.13 (Python). CuPy's runtime lazily imports cupyx for
-#      many otherwise-benign ops (cp.clip, cp.linspace, cp.floor, …).
-#      cupyx in turn imports cupyx.scipy.sparse, which transitively
-#      imports scipy.sparse. The debian-shipped scipy 1.11.4 is compiled
-#      against numpy 1.x and crashes with `ImportError: A module that
-#      was compiled using NumPy 1.x cannot be run in NumPy 2.x` once
-#      numpy 2 is the active runtime. The crash propagates out of cupy's
-#      lazy import inside per-frame encode and kills the SSE stream.
-#      Installing a numpy-2-compatible scipy alongside makes the
-#      cupyx import succeed cleanly.
-#
-#   3. CUDA toolkit runtime libs (libnvrtc, libcudart, libcublas). The
+#   2. CUDA toolkit runtime libs (libnvrtc, libcudart, libcublas). The
 #      driver is injected at container start by `runtime: nvidia` but the
 #      toolkit isn't. Without libnvrtc CuPy fails to JIT-compile kernels.
 #      We install from NVIDIA's official apt repo and register the
@@ -145,15 +133,13 @@ RUN if [ "${SCRY_GPU}" != "cpu" ]; then \
         rm -rf /var/lib/apt/lists/* ; \
         echo "/usr/local/cuda-12.6/targets/x86_64-linux/lib" > /etc/ld.so.conf.d/cuda-12.6.conf ; \
         ldconfig ; \
-        echo "=== Installing cupy-cuda12x + numpy 2 + scipy 1.13+ (into /usr/local) ===" ; \
+        echo "=== Installing cupy-cuda12x (Python, into /usr/local) ===" ; \
         /usr/bin/python3 -m pip install \
             --break-system-packages \
             --target=/usr/local/lib/python3.12/dist-packages \
-            cupy-cuda12x "scipy>=1.13" ; \
-        echo "=== Sanity check (import-only; GPU runtime not available during build) ===" ; \
+            cupy-cuda12x ; \
+        echo "=== Sanity check ===" ; \
         /usr/bin/python3 -c "import cupy; print('cupy', cupy.__version__, 'wheel OK')" ; \
-        /usr/bin/python3 -c "import scipy; import scipy.sparse; print('scipy', scipy.__version__, 'sparse OK')" ; \
-        /usr/bin/python3 -c "import cupy as cp; from cupyx.scipy.ndimage import zoom; print('cupyx imports OK')" ; \
     else \
         echo "SCRY_GPU=cpu, skipping GPU stack install"; \
     fi
