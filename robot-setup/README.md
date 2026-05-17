@@ -4,9 +4,9 @@ Three Docker stacks live here, picked by purpose:
 
 | File | Purpose |
 |------|---------|
-| `Dockerfile` + `docker-compose.yml` | Production install: ROS Humble + scry-connect only. What runs on the actual robot. |
-| `Dockerfile.dev` + `docker-compose.dev.yml` | Dev sandbox: Humble desktop-full + turtlesim + connect in editable mode. Quick smoke testing. |
-| `Dockerfile.sim` + `docker-compose.sim.yml` | **Full-stack sim** (this doc): ROS 2 Jazzy + Gazebo Harmonic + TurtleBot3 + Nav2 + SLAM. End-to-end app testing with a moving robot, lidar, camera, odometry. |
+| `Dockerfile` + `docker-compose.yml` | **Production sidecar**: builds a minimal ROS 2 ros-base container with `scry-connect` pip-installed from PyPI at a pinned version. Runs on `network_mode: host` alongside the rest of the robot's ROS 2 stack. What you actually deploy on a real robot. |
+| `Dockerfile.dev` + `docker-compose.dev.yml` | Dev sandbox: ROS desktop-full + turtlesim + connect in editable mode (bind-mounted source). Use this when iterating on scry-connect Python. |
+| `Dockerfile.sim` + `docker-compose.sim.yml` | **Full-stack sim** (this doc): ROS 2 Jazzy + Gazebo Harmonic + TurtleBot3 + Nav2 + SLAM. The `sim` container provides the moving robot; the `connect` container builds from the same `Dockerfile` as production (PyPI install at the pinned version) — so what you test here is what you deploy. |
 
 ---
 
@@ -22,7 +22,7 @@ cd robot-setup
 docker compose -f docker-compose.sim.yml build
 ```
 
-The build clones TurtleBot3 from source (the `jazzy` branch — there is no apt release for Jazzy yet) and `colcon build`s it inside the image.
+The `sim` image clones TurtleBot3 from source (the `jazzy` branch — there is no apt release for Jazzy yet) and `colcon build`s it inside the image. The `connect` image is built from `robot-setup/Dockerfile` and pip-installs `scry-connect==0.1.1` from PyPI — the same artifact a real robot deploys. To change which version the sim uses, edit `SCRY_CONNECT_VERSION` (and the `image:` tag) in `docker-compose.sim.yml`'s `connect:` service.
 
 ### 2. Start the sim + connect
 

@@ -1,15 +1,21 @@
-# Scry sim image — full ROS 2 Jazzy desktop + Gazebo Harmonic + TurtleBot3
-# stack for end-to-end testing of the Scry app against a moving robot with
+# Scry sim image — Gazebo Harmonic + TurtleBot3 + Nav2 stack for
+# end-to-end testing of the Scry Android app against a moving robot with
 # real sensor topics (lidar, camera, IMU, odometry, tf).
+#
+# This image only contains the simulation half. The MCP server itself
+# (``scry-connect``) is pulled as a separate release artifact from GHCR
+# by docker-compose.sim.yml — see the ``connect`` service there. Both
+# containers join the same DDS bus via ``network_mode: host`` so they
+# share /scan, /camera/image_raw, /tf, etc. without any extra wiring.
 #
 # What's inside:
 #   - ROS 2 Jazzy desktop-full (rviz2, demo_nodes, common msgs, tf2 tools)
-#   - Gazebo Harmonic + ros_gz connect
+#   - Gazebo Harmonic + ros_gz bridge
 #   - TurtleBot3 packages (msgs, description, gazebo, teleop) built from source
 #     (TurtleBot3 has no apt release for Jazzy yet — `jazzy` branch is used.)
 #   - Nav2 (navigation2) and SLAM Toolbox + Cartographer
 #   - rqt, rqt_image_view, teleop_twist_keyboard
-#   - scry-connect dependencies pre-installed
+#   - m-explore-ros2 frontier exploration
 #
 # Image is large (~7 GB). Build once, then `up` is fast.
 #
@@ -22,16 +28,12 @@ FROM osrf/ros:jazzy-desktop-full
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    PIP_ROOT_USER_ACTION=ignore \
     PYTHONUNBUFFERED=1 \
     ROS_DISTRO=jazzy \
     ROS_DOMAIN_ID=0 \
     RMW_IMPLEMENTATION=rmw_fastrtps_cpp \
     TURTLEBOT3_MODEL=burger \
-    GZ_VERSION=harmonic \
-    SCRY_PORT=5339 \
-    SCRY_VENV=/opt/scry-venv \
-    PATH=/opt/scry-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    GZ_VERSION=harmonic
 
 # ── OSRF Gazebo apt repo ─────────────────────────────────────────
 # Gazebo Harmonic is NOT in Ubuntu Noble's archive — it lives in OSRF's
@@ -94,22 +96,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libgl1-mesa-dri \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Python venv for scry-connect ──────────────────────────────────
-# Ubuntu Noble (PEP 668) marks system Python as externally-managed and
-# the apt-shipped pip 24 can't be upgraded in place. We create a venv with
-# --system-site-packages so it inherits rclpy (apt-installed under
-# /opt/ros/jazzy/lib/python3.12/site-packages once ROS is sourced) but
-# keeps scry-connect's pip-installed deps in /opt/scry-venv. PATH is set
-# above so `pip` and `scry-connect` resolve to the venv.
-#
-# Pillow + psutil aren't declared in scry-connect's pyproject.toml but the
-# connect uses them (image resize, system_info). Everything else (mcp,
-# uvicorn, starlette, sse-starlette, qrcode, zeroconf) gets pulled in by
-# `pip install -e /opt/scry-connect` at runtime via compose.
-RUN python3 -m venv --system-site-packages "${SCRY_VENV}" \
- && "${SCRY_VENV}/bin/pip" install --no-cache-dir --upgrade pip 'packaging>=24.2' \
- && "${SCRY_VENV}/bin/pip" install --no-cache-dir pillow psutil
-
 # ── TurtleBot3 + frontier exploration from source ────────────────
 # TurtleBot3 has no apt release for Jazzy yet — clone the jazzy branch.
 # m-explore-ros2 (explore_lite) gives us frontier-based autonomous
@@ -147,10 +133,6 @@ RUN echo 'source /opt/ros/jazzy/setup.bash' >> /etc/bash.bashrc \
 # installed here so the image is self-contained).
 COPY robot-setup/sim/ /opt/scry-sim/
 RUN chmod +x /opt/scry-sim/*.sh
-
-WORKDIR /opt/scry-connect
-
-EXPOSE 5339
 
 # Default: just drop into a shell. Compose overrides per service.
 CMD ["bash", "-l"]
