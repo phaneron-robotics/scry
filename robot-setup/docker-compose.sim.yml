@@ -123,6 +123,19 @@ services:
   # image around. We re-state the few host-namespace settings the
   # connect actually needs (network/ipc/pid host so it sees the same
   # DDS bus the sim publishes onto).
+  #
+  # Development override
+  # --------------------
+  # Setting ``SCRY_CONNECT_DEV=1`` mounts ``../../scry-connect`` over the
+  # baked-in install and uses ``pip install -e`` so local edits to the
+  # multi-endpoint enumeration, firewall probe, /pair v2 payload, etc.
+  # take effect without rebuilding the image. ROS messages still come
+  # from the image's ROS install; only the Python package is overridden.
+  #
+  #   SCRY_CONNECT_DEV=1 docker compose -f docker-compose.sim.yml up connect sim
+  #
+  # The default (``SCRY_CONNECT_DEV`` unset) still ships the pinned
+  # release; CI and `robot-setup/` reproductions stay byte-identical.
   connect:
     image: scry-connect:0.1.1
     build:
@@ -141,6 +154,17 @@ services:
       USE_SIM_TIME: "true"
       SCRY_PORT: "5339"
       SCRY_AUDIT_LOG: "/root/.local/state/scry/audit.jsonl"
+      # Force ANSI color in the startup banner. Docker captures stdout
+      # without a TTY, so the banner's auto-detect would print gray-only
+      # bars. `docker logs -f` from a terminal renders ANSI escape codes
+      # fine, so we set FORCE_COLOR=1 and let the brand bars show in
+      # green. Honors NO_COLOR if the operator overrides upstream.
+      FORCE_COLOR: "${FORCE_COLOR:-1}"
+      # When set, the entrypoint reinstalls scry-connect editable from
+      # the mounted source at /opt/scry-connect before launching. This
+      # keeps the production Dockerfile clean while letting devs iterate
+      # without rebuilds.
+      SCRY_CONNECT_DEV: "${SCRY_CONNECT_DEV:-}"
     volumes:
       # Persistent config (paired token, etc.) + audit log location.
       - scry_config:/root/.config/scry
@@ -150,9 +174,33 @@ services:
       # container so docker.sock is writable.
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker:ro
-    # No `command:` override — the image's CMD runs
-    # ``scry-connect --host 0.0.0.0 --port 5339`` which matches the
-    # sim's prior behaviour.
+      # Dev mount: the sibling scry-connect repo. Read-write because pip
+      # writes ``.egg-info`` / ``__pycache__`` next to the source when
+      # installing editable. Same relative path as the sim service, so
+      # both see the working tree.
+      - ../../scry-connect:/opt/scry-connect
+    # Override the image's CMD so we can run the dev install before
+    # exec'ing the server. The entrypoint always sources ROS and then
+    # passes "$@" to scry-connect, so we have to compose that ourselves.
+    entrypoint: ["/bin/bash", "-lc"]
+    command:
+      - |
+        set -e
+        source /opt/ros/${ROS_DISTRO:-jazzy}/setup.bash
+        if [ "${SCRY_CONNECT_DEV}" = "1" ]; then
+          echo "[scry-connect] SCRY_CONNECT_DEV=1 — reinstalling editable from /opt/scry-connect"
+          if [ ! -f /opt/scry-connect/pyproject.toml ]; then
+            echo "[scry-connect] ERROR: /opt/scry-connect/pyproject.toml not found." >&2
+            echo "[scry-connect] Check the bind mount — expected the host's ../../scry-connect tree." >&2
+            exit 1
+          fi
+          # --break-system-packages is needed on Ubuntu 24.04 (PEP 668);
+          # harmless on older bases.
+          python3 -m pip install --no-cache-dir --break-system-packages \
+                  -e /opt/scry-connect 2>/dev/null \
+            || python3 -m pip install --no-cache-dir -e /opt/scry-connect
+        fi
+        exec scry-connect --host 0.0.0.0 --port 5339
     depends_on:
       - sim
     restart: unless-stopped
