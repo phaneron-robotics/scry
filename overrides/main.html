@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{# ──────────────────────────────────────────────────────────
+   Scry — Material theme overrides.
+   Adds SEO meta, OpenGraph, JSON-LD, Inter / JetBrains Mono
+   font loading, and the brand color-meta for mobile browsers.
+   ────────────────────────────────────────────────────────── #}
+
+{% block extrahead %}
+  {% set canonical  = (page and page.canonical_url) or config.site_url %}
+  {% set page_title = (page and page.meta and page.meta.title) or (page and page.title) or config.site_name %}
+  {% set page_desc  = (page and page.meta and page.meta.description) or config.site_description %}
+  {% set og_image   = config.site_url ~ "assets/og-card.png" %}
+
+  {# ── Core SEO ───────────────────────────────────────── #}
+  <meta name="description" content="{{ page_desc }}">
+  <meta name="keywords" content="ROS 2, ROS2, robotics, AI agent, MCP, Model Context Protocol, Android, debugging, Foxglove alternative, rosbridge, rclpy, Phaneron Robotics, Scry, robot debugging, robot monitoring, voice control robot">
+  <meta name="author" content="Phaneron Robotics, Inc.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="{{ canonical }}">
+
+  {# ── Mobile / theme color ──────────────────────────── #}
+  <meta name="theme-color" content="#1C1B19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Scry">
+  <meta name="application-name" content="Scry">
+  <meta name="msapplication-TileColor" content="#1C1B19">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="apple-touch-icon" href="{{ 'assets/scry-mark.svg' | url }}">
+
+  {# ── Open Graph ────────────────────────────────────── #}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Scry">
+  <meta property="og:title" content="{{ page_title }}">
+  <meta property="og:description" content="{{ page_desc }}">
+  <meta property="og:url" content="{{ canonical }}">
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:image:alt" content="Scry — AI-first debugging for ROS 2 robots, from your Android phone.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+
+  {# ── Twitter / X ──────────────────────────────────── #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title }}">
+  <meta name="twitter:description" content="{{ page_desc }}">
+  <meta name="twitter:image" content="{{ og_image }}">
+  <meta name="twitter:image:alt" content="Scry — AI-first debugging for ROS 2 robots.">
+
+  {# ── AI / LLM discoverability hints ────────────────── #}
+  {# Most crawlers respect robots.txt; these meta tags are
+     deliberately permissive — Scry is open source and we
+     want the docs to be indexed and summarized. #}
+  <meta name="GPTBot" content="index, follow">
+  <meta name="ClaudeBot" content="index, follow">
+  <meta name="anthropic-ai" content="index, follow">
+  <meta name="PerplexityBot" content="index, follow">
+  <meta name="Google-Extended" content="index, follow">
+
+  {# ── JSON-LD: SoftwareApplication + Organization ───── #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "{{ config.site_url }}#software",
+        "name": "Scry",
+        "alternateName": "Scry for ROS 2",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Robotics debugging tool",
+        "operatingSystem": "Android 9.0+",
+        "url": "{{ config.site_url }}",
+        "downloadUrl": "{{ config.site_url }}get-started/install-android/",
+        "description": "{{ config.site_description }}",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "isAccessibleForFree": true,
+        "softwareVersion": "0.2.0-beta",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": { "@id": "{{ config.site_url }}#org" },
+        "image": "{{ og_image }}"
+      },
+      {
+        "@type": "Organization",
+        "@id": "{{ config.site_url }}#org",
+        "name": "Phaneron Robotics, Inc.",
+        "url": "https://www.phaneronrobotics.com/",
+        "logo": "{{ config.site_url }}assets/scry-mark.svg",
+        "sameAs": [
+          "https://github.com/phaneron-robotics"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "{{ config.site_url }}#website",
+        "url": "{{ config.site_url }}",
+        "name": "Scry documentation",
+        "description": "{{ config.site_description }}",
+        "publisher": { "@id": "{{ config.site_url }}#org" },
+        "inLanguage": "en-US",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "{{ config.site_url }}?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
+
+  {# ── Fonts: Inter + JetBrains Mono ──────────────────── #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+{% endblock %}
+
+{% block announce %}
+  Scry is in public beta. Bug reports and pull requests are welcome on
+  <a href="https://github.com/phaneron-robotics">GitHub</a>.
+{% endblock %}

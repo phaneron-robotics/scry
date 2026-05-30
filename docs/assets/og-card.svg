@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="bg-glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%"   stop-color="#A3B86C" stop-opacity="0.10"/>
+      <stop offset="60%"  stop-color="#A3B86C" stop-opacity="0.00"/>
+    </radialGradient>
+    <linearGradient id="bg-vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1C1B19"/>
+      <stop offset="100%" stop-color="#0F0E0D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg-vignette)"/>
+  <rect width="1200" height="630" fill="url(#bg-glow)"/>
+
+  <!-- Logo tile -->
+  <g transform="translate(96, 175)">
+    <rect width="280" height="280" rx="62" fill="#1C1B19" stroke="#3A3835" stroke-width="1"/>
+    <g transform="translate(60, 66) scale(0.32)">
+      <rect x="42" y="0"   width="500" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="0"  y="62"  width="417" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="0"  y="124" width="292" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="0"  y="186" width="208" height="46" rx="14" fill="#A3B86C"/>
+      <rect x="42" y="248" width="500" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="375" y="310" width="208" height="46" rx="14" fill="#A3B86C"/>
+      <rect x="292" y="372" width="292" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="167" y="434" width="417" height="46" rx="14" fill="#6B6B5E"/>
+      <rect x="42" y="496" width="500" height="46" rx="14" fill="#6B6B5E"/>
+    </g>
+  </g>
+
+  <!-- Wordmark + tagline -->
+  <g transform="translate(440, 235)" font-family="Inter, system-ui, sans-serif" fill="#E8E4D9">
+    <text font-size="22" font-weight="500" letter-spacing="3.6" fill="#A3B86C">SCRY</text>
+    <text y="76" font-size="56" font-weight="500" letter-spacing="-1.2">AI-first debugging</text>
+    <text y="142" font-size="56" font-weight="500" letter-spacing="-1.2">for ROS 2 robots.</text>
+    <text y="210" font-size="22" font-weight="400" fill="#9C9A8D" letter-spacing="0.2">
+      <tspan>From your Android phone.</tspan>
+      <tspan x="0" dy="32">No cloud backend. No telemetry.</tspan>
+    </text>
+  </g>
+
+  <!-- Footer strip -->
+  <rect x="0" y="586" width="1200" height="1" fill="#3A3835"/>
+  <g transform="translate(96, 605)" font-family="Inter, system-ui, sans-serif">
+    <text font-size="16" fill="#9C9A8D">phaneron-robotics.github.io/scry-web</text>
+    <text x="908" font-size="16" fill="#6B6B5E">Phaneron Robotics, Inc.</text>
+  </g>
+</svg>
