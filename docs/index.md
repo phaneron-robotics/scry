@@ -73,22 +73,6 @@ cloud backend. No telemetry. Your AI key, your robot, your network.**
 
 ---
 
-<span class="scry-eyebrow">What you can ask</span>
-
-> *Why is `/cmd_vel` not publishing?*
-
-> *Plot the IMU acceleration for five seconds.*
-
-> *Which nodes are using the most CPU right now?*
-
-> *Set the `max_vel_x` parameter on the controller to 0.4 and confirm it took.*
-
-> *Alert me if the battery drops below 20%.*
-
-> *Which robot in my fleet is missing `/scan`?*
-
----
-
 <span class="scry-eyebrow">How it works</span>
 
 ```mermaid
