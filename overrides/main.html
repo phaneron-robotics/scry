@@ -14,7 +14,7 @@
 
   {# ── Core SEO ───────────────────────────────────────── #}
   <meta name="description" content="{{ page_desc }}">
-  <meta name="keywords" content="ROS 2, ROS2, robotics, AI agent, MCP, Model Context Protocol, Android, debugging, Foxglove alternative, rosbridge, rclpy, Phaneron Robotics, Scry, robot debugging, robot monitoring, voice control robot">
+  <meta name="keywords" content="ROS 2, ROS2, robotics, AI assistant, MCP, Model Context Protocol, Android, iOS, debugging, Foxglove alternative, rosbridge, rclpy, Phaneron Robotics, Scry, robot debugging, robot monitoring, voice control robot">
   <meta name="author" content="Phaneron Robotics, Inc.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="googlebot" content="index, follow">
@@ -51,8 +51,8 @@
 
   {# ── AI / LLM discoverability hints ────────────────── #}
   {# Most crawlers respect robots.txt; these meta tags are
-     deliberately permissive — Scry is open source and we
-     want the docs to be indexed and summarized. #}
+     deliberately permissive — these docs are public and we
+     want them indexed and summarized. #}
   <meta name="GPTBot" content="index, follow">
   <meta name="ClaudeBot" content="index, follow">
   <meta name="anthropic-ai" content="index, follow">
@@ -77,7 +77,7 @@
         "description": "{{ config.site_description }}",
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "isAccessibleForFree": true,
-        "softwareVersion": "0.2.0-beta",
+        "softwareVersion": "0.2.0",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -119,9 +119,4 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-{% endblock %}
-
-{% block announce %}
-  Scry is in public beta. Bug reports and pull requests are welcome on
-  <a href="https://github.com/phaneron-robotics">GitHub</a>.
 {% endblock %}
