@@ -64,6 +64,18 @@ great for "the robot is doing something weird and I can't even describe
 it." This needs a model that supports images; see
 [Choose your AI](choose-ai.md).
 
+## More things to ask
+
+Once you're comfortable, these are the kinds of questions Scry handles
+well:
+
+- *Why is `/cmd_vel` not publishing?*
+- *Plot the IMU acceleration for five seconds.*
+- *Which nodes are using the most CPU right now?*
+- *Set `max_vel_x` on the controller to 0.4 and confirm it took.*
+- *Alert me if the battery drops below 20%.*
+- *Which robot in my fleet is missing `/scan`?*
+
 ## How it flows
 
 Every message follows the same simple loop: you ask, Scry decides what
