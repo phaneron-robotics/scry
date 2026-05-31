@@ -33,6 +33,97 @@ cloud backend. No telemetry. Your AI key, your robot, your network.**
 
 ---
 
+<span class="scry-eyebrow">What you can do</span>
+
+<div class="grid cards" markdown>
+
+-   :material-chat-processing: **Debug by chatting**
+
+    Ask in plain language — *"why isn't `/cmd_vel` publishing?"* — and
+    Scry inspects topics, nodes, services, and parameters live, then
+    explains what it found.
+
+-   :material-microphone: **Voice and images**
+
+    Talk to your robot hands-free, or attach a screenshot or photo and
+    ask *"what's wrong in this scene?"* Transcription runs on your phone.
+
+-   :material-gesture-tap-button: **Act with one tap**
+
+    Publish a topic, set a parameter, call a service, drive a lifecycle
+    change — every action shows you exactly what it'll do and waits for
+    your approval first.
+
+-   :material-bell-ring: **Background monitors**
+
+    *"Alert me if `/odom` drops below 10 Hz."* Scry watches in the
+    background and pings you the moment a condition trips.
+
+-   :material-chart-line: **Live panels and plots**
+
+    Sensor readouts, scene snapshots, transform trees, and live plots
+    render right in the chat — no raw JSON to squint at.
+
+-   :material-wifi-off: **Yours, end to end**
+
+    No cloud backend, no telemetry. Run it fully offline with a local
+    model. Your AI key, your robot, your network.
+
+</div>
+
+---
+
+<span class="scry-eyebrow">What you can ask</span>
+
+> *Why is `/cmd_vel` not publishing?*
+
+> *Plot the IMU acceleration for five seconds.*
+
+> *Which nodes are using the most CPU right now?*
+
+> *Set the `max_vel_x` parameter on the controller to 0.4 and confirm it took.*
+
+> *Alert me if the battery drops below 20%.*
+
+> *Which robot in my fleet is missing `/scan`?*
+
+---
+
+<span class="scry-eyebrow">How it works</span>
+
+```mermaid
+flowchart LR
+    A["Scry app\non your phone"]
+    B["scry-connect\non your robot"]
+    C["ROS 2 graph\nany middleware"]
+    A <-->|"your network"| B
+    B <-->|"ROS 2"| C
+    classDef brand fill:#292826,stroke:#3A3835,stroke-width:1px,color:#E8E4D9
+    class A,B,C brand
+    linkStyle 0,1 stroke:#A3B86C,stroke-width:2px,color:#9C9A8D
+```
+
+Your phone runs the assistant, decides what to check, renders the
+results, keeps your monitors running, and manages your fleet. The robot
+runs a small server, `scry-connect`, that exposes its ROS 2 capabilities
+to Scry. Reads are free; anything that changes the robot asks for your
+approval first. [Read more →](how-it-works.md)
+
+---
+
+<span class="scry-eyebrow">What you need</span>
+
+- **A phone** running Android 9 or newer. (iOS coming soon.)
+- **A ROS 2 robot** running Humble, Iron, Jazzy, Kilted, Lyrical, or
+  Rolling.
+- **An AI provider.** OpenRouter is recommended — one key unlocks 300+
+  models and has a free tier. Prefer fully offline? Point Scry at a
+  local Ollama server. See [Choose your AI](get-started/choose-ai.md).
+- **Your network.** Phone and robot talk directly. Nothing routes
+  through a cloud.
+
+---
+
 <span class="scry-eyebrow">Where to go next</span>
 
 <div class="grid cards" markdown>
@@ -73,40 +164,6 @@ cloud backend. No telemetry. Your AI key, your robot, your network.**
     [Legal](legal/index.md)
 
 </div>
-
----
-
-<span class="scry-eyebrow">How it works</span>
-
-```mermaid
-flowchart LR
-    A["Scry app\non your phone"]
-    B["scry-connect\non your robot"]
-    C["ROS 2 graph\nany middleware"]
-    A <-->|"your network"| B
-    B <-->|"ROS 2"| C
-    classDef brand fill:#292826,stroke:#3A3835,stroke-width:1px,color:#E8E4D9
-    class A,B,C brand
-    linkStyle 0,1 stroke:#A3B86C,stroke-width:2px,color:#9C9A8D
-```
-
-Your phone runs the assistant, decides what to check, renders the
-results, keeps your monitors running, and manages your fleet. The robot
-runs a small server, `scry-connect`, that exposes its ROS 2 capabilities
-to Scry. [Read more →](how-it-works.md)
-
----
-
-<span class="scry-eyebrow">What you need</span>
-
-- **A phone** running Android 9 or newer. (iOS coming soon.)
-- **A ROS 2 robot** running Humble, Iron, Jazzy, Kilted, Lyrical, or
-  Rolling.
-- **An AI provider.** OpenRouter is recommended — one key unlocks 300+
-  models and has a free tier. Prefer fully offline? Point Scry at a
-  local Ollama server. See [Choose your AI](get-started/choose-ai.md).
-- **Your network.** Phone and robot talk directly. Nothing routes
-  through a cloud.
 
 ---
 
