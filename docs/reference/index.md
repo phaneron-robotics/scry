@@ -1,26 +1,26 @@
 # Reference
 
-The exhaustive catalog. Use as a lookup, not a read-through.
+Look-up material, not a read-through.
 
-- **[MCP tools](mcp-tools.md)** — every tool `scry-connect` exposes,
-  parameters, return shape, examples, which require user approval.
-  103 entries.
-- **[Permissions](permissions.md)** — every Android runtime permission
-  Scry requests, when, and why.
+- **[What Scry can do](mcp-tools.md)** — everything `scry-connect`
+  exposes for Scry to inspect and act on, grouped by area, and which
+  actions ask for your approval.
+- **[Permissions](permissions.md)** — every phone permission the app
+  requests, when, and why.
 
-## What scry-connect doesn't ship
+## What Scry deliberately can't do
 
-For comparison, here's what an MCP-for-ROS server *could* expose but
-scry-connect deliberately omits:
+For safety, `scry-connect` keeps a tight boundary. It does **not** let
+the assistant:
 
-| Capability | Status | Reason |
-|---|---|---|
-| Arbitrary shell exec | Not exposed | Massive blast radius for AI mistakes |
-| File system write outside `/var/log/scry` | Not exposed | Same |
-| Network proxy / port forwarding | Not exposed | Same |
-| Package install (apt, pip, etc.) | Not exposed | Same |
-| Direct DDS access (bypassing rclpy) | Not exposed | RMW-agnostic is a goal |
-| Streaming sensor data (live camera, lidar) | Via SSE only | Returns thumbnails and decimated samples |
+| Capability | Why it's excluded |
+|---|---|
+| Run arbitrary shell commands | Too large a blast radius for a mistake |
+| Write files outside its own log area | Same |
+| Forward network traffic or open proxies | Same |
+| Install system or Python packages | Same |
+| Bypass ROS 2 to talk to the network directly | Scry stays middleware-agnostic |
+| Stream raw high-rate sensor feeds | Returns thumbnails and decimated samples instead, to stay light over the network |
 
-If you want any of the above, fork scry-connect and add the tool —
-the registry is straightforward.
+Reading the robot is always allowed; anything that *changes* the robot
+asks for your approval on the phone first.

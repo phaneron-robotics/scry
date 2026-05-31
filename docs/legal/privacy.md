@@ -10,17 +10,16 @@ through the Google Play Store under the package id
 `com.phaneronrobotics.scry`.
 
 If you have questions or want your data deleted, email
-**privacy@phaneronrobotics.com**.
+**info@phaneronrobotics.com**.
 
 ---
 
 ## 1. What Scry is
 
 Scry is a mobile client for debugging ROS 2 robots. It connects to a
-[scry-connect](https://github.com/phaneron-robotics/scry-connect)
-server running on your robot or development host and provides a
-chat-style interface where an AI assistant can read the robot's
-state and (with your explicit approval) call write tools on it.
+`scry-connect` server running on your robot or development host and
+provides a chat-style interface where Scry can read the robot's state
+and (with your explicit approval) take actions on it.
 
 We do not operate any cloud backend. Scry runs entirely on your
 phone, communicates directly with **your** robot's scry-connect
@@ -36,11 +35,11 @@ read them and they are excluded from the system backup.
 
 | Category | What | Where |
 |---|---|---|
-| **Robot connection profiles** | host, port, optional pairing token, mDNS name | Encrypted SQLite (Android Room) |
-| **Chat history** | your messages, the AI's responses, tool calls and their results | Encrypted SQLite |
-| **API keys** | the credentials you paste in for Claude / OpenAI / Gemini | Android EncryptedSharedPreferences (AES-256-GCM, master key in Android Keystore) |
-| **App preferences** | provider/model choice, Ollama URL, UI toggles | EncryptedSharedPreferences |
-| **Cached attachments** | screenshots and gallery imports you attach to chat messages | App cache directory; cleared by the system on low-storage pressure |
+| **Robot connection profiles** | host, port, optional pairing token, network name | Encrypted on-device database |
+| **Chat history** | your messages, Scry's responses, and the results it read from the robot | Encrypted on-device database |
+| **API keys** | the AI provider key you paste in (OpenRouter, or a per-vendor key) | Encrypted on-device storage (AES-256, backed by the Android Keystore) |
+| **App preferences** | provider/model choice, Ollama URL, UI toggles | Encrypted on-device storage |
+| **Cached attachments** | screenshots and gallery imports you attach to chat messages | App cache; cleared by the system under low-storage pressure |
 
 You can wipe everything by **Settings → Clear all data** in Android's
 app settings (this is the standard Android control; we don't add a
@@ -147,7 +146,7 @@ blob containing the robot's ROS distribution, RMW implementation, and
 the number of nodes/topics it advertises. We never include the
 robot's hostname, IP, or any topic contents.
 
-**Deletion:** email **privacy@phaneronrobotics.com** asking us to
+**Deletion:** email **info@phaneronrobotics.com** asking us to
 delete your account. We honour deletion requests within 30 days;
 usually within 24 hours. The deletion is a SQL `DELETE` on the
 `auth.users` row, which cascades to your `profiles` row. Your session
@@ -176,23 +175,20 @@ the point you first use the feature, not at install time.
 | `RECORD_AUDIO` | Optional: voice-to-text input in chat. Routed to Android's on-device `SpeechRecognizer` — we don't read or store the audio. |
 | `READ_MEDIA_IMAGES` | Optional: pick an image from your gallery to attach to a chat message. We only read the image you explicitly select. |
 
-We do not request location, contacts, microphone always-on, foreground
-service permissions, advertising id, or any other ambient-collection
-permission. The full permission list is auditable in
-[`app/src/main/AndroidManifest.xml`](
-https://github.com/phaneron-robotics/scry-android/blob/master/app/src/main/AndroidManifest.xml).
+We do not request location, contacts, always-on microphone, foreground
+service permissions, advertising ID, or any other ambient-collection
+permission. The full list, with the reason for each, is on the
+[Permissions](../reference/permissions.md) page and visible in the app
+under **Settings → Permissions**.
 
 ---
 
 ## 5. Analytics, crash reporting, advertising
 
 **None of the above.** Scry ships with no analytics SDK, no crash
-reporter, no advertising id integration, and no third-party tracker.
-You can confirm this by inspecting the dependency list in
-[`app/build.gradle.kts`](
-https://github.com/phaneron-robotics/scry-android/blob/master/app/build.gradle.kts) —
-there is no Firebase, Crashlytics, Sentry, Google Analytics, AppsFlyer,
-Adjust, Mixpanel, or similar.
+reporter, no advertising ID integration, and no third-party tracker —
+no Firebase, Crashlytics, Sentry, Google Analytics, AppsFlyer, Adjust,
+Mixpanel, or anything similar.
 
 If a future version adds crash reporting we will (a) make it opt-in,
 (b) document it in this policy, and (c) bump the "Last updated" date
@@ -217,7 +213,7 @@ You have three layers of control depending on which data you mean:
    attachments): wipe via Android **Settings → Apps → Scry → Clear
    data**. We can't see this data and don't need to act on a request.
 2. **Profile capture data** (§3.3 — the row in our Supabase database):
-   email **privacy@phaneronrobotics.com** to exercise access,
+   email **info@phaneronrobotics.com** to exercise access,
    correction, deletion, portability, or to withdraw consent. We honour
    requests within 30 days. Identity verification is via reply from the
    email address on the row.
@@ -257,6 +253,6 @@ collected before the change.
 
 ## 10. Contact
 
-**privacy@phaneronrobotics.com**
+**info@phaneronrobotics.com**
 
 GitHub: https://github.com/phaneron-robotics

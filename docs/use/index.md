@@ -2,19 +2,21 @@
 
 How to actually drive the app day-to-day, once you're past first install.
 
-- **[Chat with the agent](chat.md)** — the primary surface. Streaming
-  responses, inline tool result rendering, multi-turn context, retry,
+- **[Chat with Scry](chat.md)** — the primary surface. Streaming
+  responses, inline result rendering, multi-turn context, retry,
   fork, edit.
 - **[File attachments and images](attachments.md)** — drop a log file
-  or a screenshot into the conversation. Up to 200 KB text, max 2048 px
-  images (auto-downscaled).
-- **[Voice input](voice.md)** — Android `SpeechRecognizer` integration.
-  No audio leaves the device.
+  or a screenshot into the conversation. Up to 1 MB of text, images
+  auto-downscaled to 2048 px.
+- **[Voice input](voice.md)** — speak your question; Scry transcribes
+  on-device. No audio leaves your phone.
 - **[Background monitors](monitors.md)** — edge-triggered alerts when
-  a threshold trips. Fires into chat as if the assistant posted it.
+  a threshold trips. Fires into chat as if Scry posted it.
+- **[Connect from anywhere](remote.md)** — use Scry on the same network
+  or remotely over a VPN, plus the connect's run-time options.
 - **[Sending feedback](feedback.md)** — inline thumbs-up / thumbs-down
-  on every assistant reply, plus a top-level form for general
-  impressions, bug reports, and feature requests.
+  on every reply, plus a form for general impressions, bug reports, and
+  feature requests.
 
 ## The five tabs
 
@@ -35,8 +37,7 @@ interaction model; everything else supports it.
   playback, no PlotJuggler-grade timeseries. The Viz tab covers the
   common cases; for deep analysis, use the right tool.
 - **Not a remote desktop.** You can't run arbitrary commands on the
-  robot — only the 100+ MCP tools the connect exposes. (You can extend
-  the connect with custom tools if you need to.)
-- **Not autonomous.** The agent proposes; you approve. Every "write"
-  tool call (publish to a topic, set a parameter, call a service)
-  requires an explicit tap before it dispatches.
+  robot — only the safe, well-defined actions `scry-connect` exposes.
+- **Not autonomous.** Scry proposes; you approve. Every action that
+  changes the robot (publishing to a topic, setting a parameter, calling
+  a service) requires an explicit tap before it happens.

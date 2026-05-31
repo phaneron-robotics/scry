@@ -15,8 +15,8 @@ User-agent: DuckDuckBot
 Allow: /
 
 # AI / LLM crawlers — explicitly opted in
-# (Scry is open source. We want the docs to be indexed
-# and summarized by AI search products.)
+# (These docs are public. We want them indexed and
+# summarized by AI search products.)
 User-agent: GPTBot
 Allow: /
 

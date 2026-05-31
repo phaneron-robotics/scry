@@ -1,7 +1,7 @@
 # File attachments and images
 
 Drop text logs, source files, or screenshots into the conversation.
-The agent reads them along with your prompt.
+Scry reads them along with your prompt.
 
 ## How to attach
 
@@ -29,8 +29,8 @@ per turn**.
 | Quality | 92 (high — preserves text in screenshots) |
 | EXIF | Orientation auto-corrected (no sideways photos) |
 
-Images are sent inline in the AI request. Your provider's vision model
-sees them; Phaneron Robotics does not.
+Images are sent inline with your message to your chosen AI provider.
+Their vision model sees them; Phaneron Robotics does not.
 
 ## File attachments
 
@@ -46,8 +46,8 @@ proportional value, so trim or split the log before attaching.
 
 ## What gets stored
 
-- **Locally (Room DB):** The attachment content stays in your chat
-  history until you delete the message. Useful for re-reading without
+- **On your phone:** The attachment content stays in your chat history
+  until you delete the message. Useful for re-reading without
   re-uploading.
 - **On the AI provider:** Whatever your provider's retention is. Most
   default to zero retention; check your provider's policy.

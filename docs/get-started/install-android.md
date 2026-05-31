@@ -1,64 +1,45 @@
-# Install Scry on Android
+# Get the Scry app
 
-Scry is in **closed beta** on Google Play. Two ways to get it on your phone:
+Scry puts your ROS 2 robot in your pocket. Chat with your robot in plain
+language — by text, voice, or image — to inspect topics, nodes,
+services, and parameters, watch diagnostics, and act on the robot, all
+from your phone over your own network.
 
-## Option A — Play Store Internal Testing (recommended)
+## Download
 
-The Internal Testing track is private — only Google accounts on the
-tester list can see the listing. To join:
+<div class="grid cards" markdown>
 
-1. **Send your operator the Google account email** you want to test with.
-   It has to match the account signed in on the phone you'll install on.
-   Personal Gmail or Google Workspace both work.
-2. **Wait for confirmation** that you've been added (usually same day).
-3. **Tap the opt-in URL** the operator sends you. The link looks like:
+-   :fontawesome-brands-google-play: __Android__
 
-    ```
-    https://play.google.com/apps/internaltest/<long-id>
-    ```
+    ---
 
-4. Tap **Accept** on the "Become a tester" page.
-5. **Install from the Play Store listing** you land on. Scry shows up
-   in your library like any other app — updates ship automatically.
+    Get Scry on Google Play.
 
-!!! note "Temporary app name"
-    Until Google reviews the listing, Play Store displays the app as
-    `com.phaneronrobotics.scry (unreviewed)`. Once reviewed, the display
-    name flips to **Scry**. The app itself is the same either way.
+    **Coming soon**
 
-## Option B — sideload the AAB from GitHub Releases
+-   :fontawesome-brands-app-store-ios: __iOS__
 
-If you can't access the Play Store track, or you want to install on a
-device without Play services, grab the AAB directly:
+    ---
 
-1. Go to [scry-android releases](https://github.com/phaneron-robotics/scry-android/releases).
-2. Download `app-release.aab` from the latest release.
-3. Convert AAB to a universal APK using
-   [bundletool](https://github.com/google/bundletool):
+    Get Scry on the App Store.
 
-    ```bash
-    bundletool build-apks \
-      --bundle=app-release.aab \
-      --output=scry.apks \
-      --mode=universal
-    unzip -o scry.apks -d scry-apk
-    adb install scry-apk/universal.apk
-    ```
+    **Coming soon**
 
-4. Enable **Install unknown apps** for whatever installer you used
-   (Files, Drive, etc.) under **Settings → Apps → Special access**.
+</div>
 
-!!! warning "Auto-updates disabled"
-    Sideloaded builds don't auto-update. You'll have to manually grab
-    each release. Stick with Option A if you can.
+!!! note "Launching shortly"
+    Scry is rolling out to the Google Play Store and Apple App Store.
+    The download links above will go live here as soon as each store
+    listing is published.
 
-## Verify the install
+## What you'll need
 
-1. Open Scry from your app drawer.
-2. Sign in with Google, GitHub, magic-link email, or password — or tap
-   **Try Demo Mode** to skip sign-in and explore the app with simulated
-   data (no robot required).
-3. You should land on the empty-state chat screen with a "deep-dell"-
-   style robot name placeholder.
+- **A phone** running Android 9 (API 28) or newer. (iOS is coming soon.)
+- **An AI provider** to power the assistant — see
+  [Choose your AI](choose-ai.md). OpenRouter has a free tier, so you can
+  start at no cost.
+- **A robot** running `scry-connect` — see
+  [Install scry-connect on the robot](install-connect.md).
 
-You're ready to [install scry-connect on the robot](install-connect.md).
+Once the app is installed and your robot is running the connect, head to
+[Pair the phone and robot](pair.md) to link them.

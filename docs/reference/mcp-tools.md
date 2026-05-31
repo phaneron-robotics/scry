@@ -1,25 +1,35 @@
-# Scry Connect — MCP Tools Reference
+# What Scry can do
 
-All tools exposed by scry-connect via MCP (Model Context Protocol). The connect runs on port **5339** using Streamable HTTP transport.
+This is the full catalogue of what Scry can inspect and do on a robot
+through `scry-connect` — **103 capabilities**, grouped by area. Of
+these, **31 change the robot** and always require your approval on the
+phone; the rest are read-only.
 
-Internal layout: one manager class per CLI verb group lives under [`scry_connect/managers/`](https://github.com/phaneron-robotics/scry-connect/blob/master/scry_connect/managers/), and [`tools/registry.py`](https://github.com/phaneron-robotics/scry-connect/blob/master/scry_connect/tools/registry.py) maps MCP tool names to manager methods. The full catalogue is **103 tools** at the time of writing; **31 are write-gated**. The exact count and write/read classification is asserted in [`tests/test_tools_registry.py`](https://github.com/phaneron-robotics/scry-connect/blob/master/tests/test_tools_registry.py).
+You don't call any of these directly — you ask Scry in plain language
+and it picks the right ones. This page is a reference for what's
+possible, and a handy vocabulary if you want to be specific (e.g. "check
+the publish rate of `/odom`").
 
-## Permission model
+## Reads vs. actions
 
-- **Read-only tools** — execute immediately. The AI can call them at will.
-- **Write-gated tools** — the connect tags them `write=True`. The Android app shows a `ConfirmationCard` before dispatching; in `--token` / `--mtls` modes the connect additionally requires a one-shot `X-Scry-Confirm` nonce. The AI never has the authority to write without the user's tap.
+- **Reads** — listing topics, inspecting nodes, checking diagnostics,
+  reading parameters — run immediately. They don't change anything on
+  the robot.
+- **Actions** (marked **write** below) — publishing, setting a
+  parameter, calling a service, lifecycle changes, and so on — always
+  pause for your tap-to-approve on the phone. Scry shows exactly what it
+  intends to do before anything is sent. When you run the connect in
+  token mode, an extra one-time approval code is required too. See
+  [How Scry works](../how-it-works.md) for the safety model and
+  [Connect from anywhere](../use/remote.md) for the connect's modes.
 
-## Categories (Tier 2)
+## Capability areas
 
-Every tool is tagged with a `category=` in the registry. The Tier-0
-"core" set is always loaded; the rest are pulled in on demand via the
-phone-side `load_toolset` meta tool. Categories in use today:
-
-`core`, `topics`, `services`, `nodes`, `parameters`, `actions`,
-`lifecycle`, `performance`, `tf`, `control`, `components`, `packages`,
-`interfaces`, `process`, `watchers`, `diagnostics`, `logs`, `network`,
-`bag`, `doctor`, `daemon`, `extensions`, `build`, `system`, `docker`,
-`nav2`, `teleop`.
+Scry groups its capabilities into areas — topics, services, nodes,
+parameters, actions, lifecycle, performance, transforms (TF), control,
+components, packages, interfaces, processes, watchers, diagnostics,
+logs, network, bags, doctor, daemon, extensions, build, system, Docker,
+Nav2, and teleop. The tables below list what's in each.
 
 ## Tool groups
 
@@ -318,7 +328,7 @@ Long-running observers, up to 60 s each.
 - `ros_watch_node(node, duration, poll_interval)` — detects appearance / disappearance (crash / restart).
 - `ros_wait_for_topic(topic, timeout)` — blocks until a topic appears (bringup debugging).
 
-Condition expressions are parsed safely (no `eval` — dotted paths + comparison operators only) by `managers/safe_filter.py`.
+Condition expressions are evaluated safely — only dotted field paths and comparison operators are allowed, never arbitrary code.
 
 ---
 
@@ -359,7 +369,7 @@ Drop a small file (Python relay node, ad-hoc launch, YAML snippet) under
 List colcon workspaces the connect can detect. Auto-discovery uses `$SCRY_BUILD_WORKSPACES` (override), `$COLCON_PREFIX_PATH`, and the usual install conventions.
 
 ### `ros_colcon_build` — **write**
-Run `colcon build --packages-select <pkg…>` in a workspace. `packages` is required and non-empty — the agent must name what it's building.
+Run `colcon build --packages-select <pkg…>` in a workspace. The package list is required — Scry must name exactly what it's building.
 
 ---
 
@@ -414,27 +424,28 @@ In addition to tools, the connect exposes read-only resources:
 
 ---
 
-## Why this matrix matters
+## Why reads and actions are split
 
-Two design goals drove the read/write split:
+Two ideas shape the list above:
 
-1. **Safe default.** The AI can freely inspect anything: topics, bandwidth, diagnostics, env vars, logs, controller chains, BT XMLs, scenes. None of that changes robot behaviour.
-2. **Explicit consent for action.** Every tool that emits a message, drives a controller, mutates a parameter, scaffolds a file on disk, or launches a process is gated on a user tap in the Android app, and (in `--token`/`--mtls` mode) on a server-side nonce check.
+1. **Safe by default.** Scry can freely inspect anything — topics,
+   bandwidth, diagnostics, logs, controller chains, behaviour trees,
+   scenes. None of it changes how the robot behaves.
+2. **Explicit consent to act.** Anything that publishes a message,
+   drives a controller, changes a parameter, writes a file, or launches
+   a process pauses for your approval on the phone first (and, in token
+   mode, an extra one-time approval code).
 
-The classification is defined once in [`tools/registry.py`](https://github.com/phaneron-robotics/scry-connect/blob/master/scry_connect/tools/registry.py) (via `write=True`) and mirrored in [`McpToolCatalog.WRITE_TOOLS`](https://github.com/phaneron-robotics/scry-android/blob/master/app/src/main/java/com/scry/domain/usecase/McpToolCatalog.kt) on the Android side. The registry test [`test_write_tool_set_matches_expected`](https://github.com/phaneron-robotics/scry-connect/blob/master/tests/test_tools_registry.py) keeps the two in sync.
+## What Scry adds on the phone
 
-## Phone-side meta tools
+Beyond what the robot exposes, Scry has a few capabilities that run
+entirely on your phone — they never go to the robot:
 
-Not connect tools — these resolve entirely on the phone and never round-trip. The AI sees them in `tools/list` like any other tool. See [architecture.md](../architecture/overview.md#rich-renderer-subsystem-phase-3) for the full picture.
-
-| Tool | Purpose |
+| Capability | What it does |
 |---|---|
-| `load_skill(name)` | Pull a Tier-1 skill markdown into the system prompt for the rest of the session |
-| `load_toolset(category)` | Expand the available tool list with every tool tagged with that category |
-| `render_panel(topic, kind, duration_s, fields?)` | Embed a 1–30 s SSE-driven mini-panel (sensor / plot / scene / gps / camera) |
-| `render_scene_live(map_topic?, pose_topic?, scan_topic?, path_topic?, duration_s)` | Composed live scene — parallel SSE per layer into one canvas |
-| `emit_plan(steps, status?, verdict?)` | Render a multi-step diagnostic checklist |
-| `monitor_threshold(topic, field, op, threshold, message)` | Register an edge-triggered background watch (returns `id`) |
-| `cancel_monitor(id)` | Cancel a monitor |
-| `fleet_overview()` | Ping every saved robot and render a per-robot card |
-| `compare_robots(left_name, right_name, dimension, rows)` | Side-by-side metric grid |
+| Live panels | Embed a short live sensor / plot / scene / camera panel right in the chat |
+| Live scene | Combine a map, pose, laser scan, and path into one live view |
+| Plans | Render a multi-step diagnostic checklist with a verdict |
+| Background monitors | Watch a topic in the background and alert you when a condition trips (see [Background monitors](../use/monitors.md)) |
+| Fleet overview | Ping every saved robot and show a per-robot status card |
+| Robot comparison | Put two robots side by side on the metrics you choose |
