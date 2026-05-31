@@ -16,7 +16,7 @@ Any change to one must be reflected in the other.
 | Does your app **collect** any user data? | **Yes** — account info (email, name, user ID, optional role/company) to a Supabase database we operate, AND chat content sent on the user's behalf to their chosen AI provider. |
 | Does your app **share** any user data with third parties? | **Yes** — when the user picks the OpenRouter cloud provider, chat content is sent to OpenRouter's API (which routes it on to the underlying model vendor). With the local Ollama provider, chat content stays on the user's network. Account info goes to Supabase as our data processor (not "sharing" in Play's sense — they process on our behalf under a DPA). |
 | Is all of the user data collected by your app encrypted in transit? | **Yes** — TLS to Supabase and AI providers. LAN traffic to scry-connect is plain HTTP (cleartext-allowed per `network_security_config.xml`) which we declare. |
-| Do you provide a way for users to request that their data be deleted? | **Yes** — account deletion via email to privacy@phaneronrobotics.com (PRIVACY.md §3.3). On-device data via Android Settings → Apps → Scry → Clear data. |
+| Do you provide a way for users to request that their data be deleted? | **Yes** — account deletion via email to info@phaneronrobotics.com (PRIVACY.md §3.3). On-device data via Android Settings → Apps → Scry → Clear data. |
 
 **Framing for Play reviewers:**
 

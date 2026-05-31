@@ -13,7 +13,7 @@ Please report security issues privately through any of:
 1. **GitHub Security Advisories** (preferred): on the affected repo,
    click `Security` → `Report a vulnerability`. This gives us a private
    collaboration thread tied to the right repo.
-2. **Email**: [security@phaneronrobotics.com](mailto:security@phaneronrobotics.com)
+2. **Email**: [info@phaneronrobotics.com](mailto:info@phaneronrobotics.com)
    (monitored by the maintainers). For sensitive content, you can also
    email [deep@phaneronrobotics.com](mailto:deep@phaneronrobotics.com) directly.
 

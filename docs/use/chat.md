@@ -1,85 +1,81 @@
-# Chat with the agent
+# Chat with Scry
 
-The Scry tab is your primary surface. Streaming responses, live tool
-results, multi-turn context.
+The Scry tab is your main surface. Responses stream in live, tool
+results render as you go, and the whole conversation stays in context
+across turns.
 
 ## Sending a message
 
-Type in the composer at the bottom, tap **Send**. The agent will:
+Type in the composer at the bottom and tap **Send**. Scry will:
 
-1. Stream a short "thinking" indicator while picking tools
-2. Stream text + inline tool result cards as they arrive
-3. Settle into the final reply with action icons below it
+1. Show a short "thinking" indicator while it decides what to check
+2. Stream its reply, with result cards appearing inline as data arrives
+3. Settle into the final answer, with action icons beneath it
 
-You can also tap a **suggestion chip** on the empty state — those
-cycle on each new session. The shuffle button rotates them.
+On the empty state you can also tap a **suggestion chip** to get
+started — the chips rotate each session, and the shuffle button cycles
+them.
 
-## What's an "inline tool result card"
+## Inline result cards
 
-When the agent calls a tool that returns structured data, Scry doesn't
-print the raw JSON — it renders a typed card. For example:
+When Scry looks something up on the robot, it doesn't dump raw data — it
+renders a typed card. For example:
 
-- `ros_topic_hz` returns rate + std-dev → renders a big-number card
-- `fleet_overview` returns the robot list → renders a fleet table
-- `ros_node_info` returns the publishers/subscribers → renders a tabbed panel
-- `tf_tree` returns the transform tree → renders a hierarchical view
+- A topic's rate → a clear rate-and-stability card
+- The fleet list → a per-robot table
+- A node's connections → a tabbed publishers/subscribers panel
+- The transform tree → a hierarchical view
 
-The agent's prose adds context and anomaly callouts *above* the card;
-it never repeats what the card already shows.
+Scry's text adds context and flags anything unusual *above* the card; it
+never just repeats what the card already shows.
 
-## Multi-turn
+## Multi-turn conversations
 
-Conversations are persisted in Room (local SQLite). The agent sees the
-full conversation history on every turn, so follow-ups work:
+Conversations are saved on your device, and Scry sees the full history
+each turn, so follow-ups work naturally:
 
 ```
-You: what topics are on /odom*?
-AI: [lists /odom, /odom_filtered]
-You: what's the rate on the second one?
-AI: [calls ros_topic_hz on /odom_filtered]
+You:  what topics are on /odom*?
+Scry: lists /odom and /odom_filtered
+You:  what's the rate on the second one?
+Scry: checks /odom_filtered and reports its rate
 ```
 
-Conversations are **per-robot**. Switching robots in Fleets switches the
-chat surface too.
+Conversations are **per-robot** — switching robots switches the chat to
+that robot's history.
 
-## Action icons under each assistant reply
+## Action icons under each reply
 
-Every settled assistant message has a row of small icons:
+Every finished reply has a row of small icons:
 
-| Icon | What |
+| Icon | What it does |
 |---|---|
-| (scry mark) | Subtle indicator that the agent finished this turn |
-| Copy | Copy the assistant's text to clipboard |
-| Retry | Re-run this turn — sends the prior user message again |
-| / | Flag this reply (see [Sending feedback](feedback.md)) |
-| ⋮ More | Edit message, fork conversation, delete from here |
+| Scry mark | Marks that Scry finished this turn |
+| Copy | Copies the reply to your clipboard |
+| Retry | Re-runs the turn from your last message |
+| Flag | Flags the reply (see [Sending feedback](feedback.md)) |
+| More | Edit message, fork the conversation, or delete from here |
 
 ## Editing and forking
 
-- **Long-press** a user message → **Edit**. You can rewrite your prompt
-  and the agent re-runs from there, discarding everything after.
-- **Long-press** any message → **Fork**. Splits the conversation into
-  a new session at that point, preserving the original.
+- **Long-press** one of your own messages → **Edit** to rewrite your
+  question. Scry re-answers from that point, discarding what came after.
+- **Long-press** any message → **Fork** to branch the conversation into
+  a new session from that point, keeping the original intact.
 
-Useful when you're exploring "what if I asked it differently."
+Handy when you want to explore "what if I'd asked it differently."
 
-## Robot switching
+## Switching robots
 
-The chat top-bar shows the active robot's name and live latency:
+The top bar shows the active robot's name and its live connection
+latency. Tap it to switch robots — the chat swaps to that robot's
+history, and anything you've already typed comes along with you.
 
-```
-Scry ▾
-deep-dell · 33ms
-```
+## Choosing a model
 
-Tap the dropdown to switch robots. The chat surface swaps to that
-robot's history. Your in-flight composer text follows you.
-
-## Model picker
-
-Tap the **Scry** chip at the top to change AI provider/model. The
-picker shows OpenRouter's 300+ models grouped by tier (Free, Cheap,
-Mid, Premium) plus any Ollama models discovered on the robot.
-
-The selection is per-device, not per-conversation — switching models
-mid-conversation works fine.
+Tap the **Scry** chip at the top to change the model behind the
+assistant. The picker lists OpenRouter's models grouped by tier (Free,
+Cheap, Mid, Premium), plus any local Ollama models it finds on your
+network. Your choice is per-device and you can switch it mid-conversation
+without losing anything. See [Choose your AI](../get-started/choose-ai.md)
+for how to set this up.

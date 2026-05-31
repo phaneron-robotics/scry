@@ -55,32 +55,24 @@ nav:
   - Home: index.md
   - Get started:
       - get-started/index.md
-      - Install Scry on Android: get-started/install-android.md
+      - Get the Scry app: get-started/install-android.md
       - Install scry-connect on the robot: get-started/install-connect.md
+      - Choose your AI: get-started/choose-ai.md
       - Pair the phone and robot: get-started/pair.md
-      - First debugging session: get-started/first-session.md
+      - First session: get-started/first-session.md
   - Use Scry:
       - use/index.md
-      - Chat with the agent: use/chat.md
+      - Chat with Scry: use/chat.md
       - File attachments and images: use/attachments.md
       - Voice input: use/voice.md
       - Background monitors: use/monitors.md
+      - Connect from anywhere: use/remote.md
       - Sending feedback: use/feedback.md
-  - Architecture:
-      - architecture/index.md
-      - Overview: architecture/overview.md
-      - Development phases: architecture/development-phases.md
-      - UI design: architecture/ui-design.md
-      - AI provider strategy: architecture/ai-providers.md
+  - How Scry works: how-it-works.md
   - Reference:
       - reference/index.md
-      - MCP tools: reference/mcp-tools.md
+      - What Scry can do: reference/mcp-tools.md
       - Permissions: reference/permissions.md
-  - Operator:
-      - operator/index.md
-      - Beta testing program: operator/testing.md
-      - Release runbook: operator/release-runbook.md
-      - Security audit: operator/security-audit.md
   - Legal:
       - legal/index.md
       - Privacy policy: legal/privacy.md

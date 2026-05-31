@@ -1,7 +1,7 @@
-# First debugging session
+# First session
 
-Phone is paired with the robot. Time to actually use Scry. Five things
-to try, in order — each one demos a different capability.
+Your phone is paired with the robot. Time to actually use Scry. Five
+things to try, in order — each one shows off a different capability.
 
 ## 1. "What's my robot's health?"
 
@@ -11,16 +11,12 @@ In the chat composer at the bottom of the Scry tab, type:
 What's my robot's health?
 ```
 
-Tap **Send**. The agent will:
+Tap **Send**. Scry checks the robot and renders a health snapshot —
+nodes alive, topics publishing, battery if available, the ROS domain,
+and any recent errors — with a short plain-English summary above it.
 
-1. Call the `robot_health` MCP tool on the connect
-2. Get back a structured snapshot: nodes alive, topics publishing,
-   battery if available, ROS_DOMAIN_ID, transient errors
-3. Render an inline health card (the green/yellow boxes)
-4. Add a short text conclusion above the card
-
-Total time: 1–3 seconds. The data is **live** — every call hits your
-robot, no caching.
+The data is **live**: every answer reflects the robot right now, with no
+caching. A typical reply takes a second or two.
 
 ## 2. "What topics are publishing?"
 
@@ -28,9 +24,8 @@ robot, no caching.
 What topics are publishing right now?
 ```
 
-The agent calls `ros_topic_list` and renders a table with each topic's
-name, type, and publish rate (where measurable). Tap a topic to drill
-into details.
+Scry lists the active topics with their type and publish rate (where it
+can measure one). Tap a topic to drill into its details.
 
 ## 3. Inspect a single topic
 
@@ -38,76 +33,66 @@ into details.
 What's on /odom?
 ```
 
-If `/odom` exists on your robot, the agent calls `ros_topic_echo` for
-one message and renders the JSON inline. For high-frequency topics
-(IMU, camera, lidar) it instead calls `ros_topic_hz` and gives you the
-publish rate + std-dev.
+If `/odom` exists, Scry reads a sample message and shows it. For
+high-frequency topics (IMU, camera, lidar) it reports the publish rate
+and stability instead of flooding you with messages.
 
 ## 4. Voice input
 
-Tap the **microphone** icon in the composer (between the `+` and the
-send button). Say:
+Tap the **microphone** icon in the composer (between the **+** and the
+send button) and say:
 
 > What was the last warning in `/rosout`?
 
-Release. The transcript appears in the composer; tap send. Voice uses
-the Android system `SpeechRecognizer` — Google's on-device model on
-most phones, no audio leaves the device.
+Release, and the transcript appears in the composer — tap send. Voice is
+transcribed on your phone; no audio leaves the device. See
+[Voice input](../use/voice.md).
 
 ## 5. Image attachment
 
 Take a screenshot of an RViz scene, a terminal showing an error, or a
-photo of the robot itself. In Scry:
+photo of the robot. In Scry:
 
-1. Tap the **+** icon in the composer
-2. Choose **Gallery** (or **Take photo** to capture fresh)
-3. Pick the image — it appears as a chip above the input
+1. Tap the **+** icon in the composer.
+2. Choose **Gallery** (or **Take photo** to capture a fresh one).
+3. Pick the image — it appears as a chip above the input.
 4. Type a question, e.g. `what's wrong in this RViz scene?`
-5. Send
+5. Send.
 
-The agent uses your provider's vision model (Claude Sonnet, GPT-4o,
-Gemini Pro, etc.) to actually look at the image. Useful for "the robot
-is doing weird stuff and I don't even know how to describe it."
+Scry uses your provider's vision model to actually look at the image —
+great for "the robot is doing something weird and I can't even describe
+it." This needs a model that supports images; see
+[Choose your AI](choose-ai.md).
 
-## What just happened under the hood
+## How it flows
 
-Every message you send goes through the same loop:
+Every message follows the same simple loop: you ask, Scry decides what
+to check, it reads the robot live, and it explains the result. If a step
+would *change* the robot — publishing, setting a parameter, calling a
+service — Scry pauses and asks you to approve it first. Reading is free;
+acting asks first.
 
-```
-You type → ChatViewModel
-  → AiProxyLoop builds: system prompt + tier-0 tools (~10 core MCP tools)
-  → AI provider streams response
-  → If AI calls a tool:
-      - Read tool? → run immediately, send result back
-      - Write tool? → show approval dialog → wait for your tap → run
-  → AI continues until it sends final text
-  → save to local Room DB
-```
-
-The AI doesn't have a persistent connection to your robot. Each tool
-call is a fresh HTTP request to `scry-connect`, scoped to that turn.
-Nothing crosses the cloud except the AI inference itself (and that's
-zero-retention with most providers).
+Nothing is cached and nothing routes through a Scry cloud — your phone
+talks to your AI provider and to your robot directly.
 
 ## When something breaks
 
-Three places to look, in order:
+Two places to look, in order:
 
-1. **Look at the message in chat.** If the AI says "I tried `ros_topic_list`
-   and got an error: …" — that's the connect's response. Usually means
-   the robot's state changed (node crashed, topic stopped).
-2. **Check the connect logs** on the robot: `journalctl --user -u
-   scry-connect -f`. Per-call audit logs are in `/var/log/scry/audit.log`.
-3. **File feedback** via Settings → Feedback in the app, or on the
-   specific reply. Both go to the operator's dashboard.
+1. **Read the reply in chat.** If Scry says it tried something and got an
+   error, that's the robot's own response — usually a node that crashed
+   or a topic that stopped.
+2. **Check the connect on the robot.** If you installed it as a service,
+   view its log with `journalctl --user -u scry-connect -f`.
+
+You can also flag a reply with the thumbs-down icon, or send a note from
+**Settings → Feedback** — see [Sending feedback](../use/feedback.md).
 
 ## What's next
 
-Now that you've kicked the tires:
-
-- **[Use Scry](../use/index.md)** — the full feature tour (monitors,
-  fleet view, multi-robot, etc.)
-- **[Architecture](../architecture/index.md)** — how the pieces fit
-  together if you want to extend or contribute
-- **[MCP tools reference](../reference/mcp-tools.md)** — every tool
-  the agent can call, with what it returns
+- **[Use Scry](../use/index.md)** — the full feature tour: monitors,
+  fleet view, multi-robot, and connecting remotely.
+- **[How Scry works](../how-it-works.md)** — what the phone and the robot
+  each do, and why there's no cloud backend.
+- **[What Scry can do](../reference/mcp-tools.md)** — everything Scry can
+  inspect and act on, on a robot.

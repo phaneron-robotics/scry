@@ -29,10 +29,10 @@ the action row below it. Tap one:
 | Robot name | No | Not part of the feedback row |
 | App version, OS version, locale | Yes | For triage only |
 
-Tool args/results are excluded because they can leak robot internals
-(IPs, topic message values, sensor data). The user's prompt + tool
-names is enough for the operator to triage "which kind of question
-went wrong."
+Tool arguments and results are excluded because they can leak robot
+internals (IPs, topic message values, sensor data). Your prompt plus the
+names of the actions involved is enough for Phaneron Robotics to triage
+"which kind of question went wrong."
 
 ## Settings → Feedback (general)
 
@@ -55,8 +55,8 @@ otherwise.
 
 | Where | What |
 |---|---|
-| `public.feedback` table on Phaneron's Supabase project | One row per submission. RLS scoped — you can only see your own rows. |
-| Operator dashboard | Phaneron triages weekly. Status field flips to `reviewed` / `fixed`. |
+| Phaneron Robotics' secure database | One row per submission, visible only to you and to Phaneron. |
+| Phaneron Robotics review | The team triages feedback regularly and updates its status as it's reviewed and addressed. |
 
 ## Disabling
 

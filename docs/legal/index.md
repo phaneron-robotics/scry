@@ -8,8 +8,8 @@ Policies that apply to Scry the app and its associated services.
   expanded with explanations.
 - **[Security policy](security.md)** — how to report vulnerabilities,
   what's in scope, response timeline.
-- **[License](license.md)** — Apache 2.0 for the code; CC-BY-4.0 for
-  brand assets.
+- **[License](license.md)** — how the apps, `scry-connect`, the docs,
+  and the brand assets are each licensed.
 
 ## Quick answers
 
@@ -17,7 +17,7 @@ Policies that apply to Scry the app and its associated services.
 |---|---|
 | Does Scry sell my data? | No. We collect only what's required to operate the app. |
 | Does Scry route my robot's data through your servers? | No. Phone ↔ robot is direct over LAN. Only the AI provider sees prompts. |
-| Where is my data stored? | Your phone (Room DB) + your AI provider's servers + Phaneron's Supabase project (auth + opt-in feedback). |
+| Where is my data stored? | On your phone, on your chosen AI provider's servers, and in Phaneron Robotics' secure database (account sign-in and opt-in feedback). |
 | How do I delete my account? | Email `info@phaneronrobotics.com`. We honour requests within 30 days. Or use the in-app "Delete account" path in Settings → Account. |
 | Where do you operate? | Phaneron Robotics, Inc. is a Delaware C-corp. Data lives in Supabase's US-East region. |
 

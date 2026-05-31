@@ -6,14 +6,13 @@ condition trips.
 
 ## How to set one
 
-Just ask the agent:
+Just ask Scry:
 
 ```
 Watch /odom and alert me if its rate drops below 10 Hz.
 ```
 
-The agent calls the `monitor_threshold` phone-side meta-tool with the
-right parameters. You'll see a confirmation in chat ("Monitor armed:
+Scry sets up the monitor and confirms it in chat ("Monitor armed:
 /odom rate < 10 Hz"). The monitor is now live.
 
 You can also set monitors on:
@@ -47,42 +46,39 @@ It looks identical to a regular assistant reply (same alignment, same
 brand mark). Difference is the Note: glyph and the explicit "Monitor
 fired" prefix.
 
-The agent then sees this message on the next turn, so you can ask
-follow-ups like "what's causing the rate drop?" and it'll have full
-context.
+Scry sees this message on the next turn, so you can ask follow-ups like
+"what's causing the rate drop?" and it'll have full context.
 
 ## Where monitors run
 
-Monitors are **app-scoped**, not robot-scoped:
+Monitors run on your **phone**, watching the robot's live data:
 
-- `MonitorRegistry` is a Hilt `@Singleton` with `SupervisorJob + Dispatchers.Default`
-- Each monitor opens an SSE subscription to the connect's `/stream?topic=…`
-- The phone evaluates the predicate on each delta
-- Process death cancels all monitors — they don't survive an app restart
+- The phone keeps a live stream open to the robot for each monitor and
+  checks the condition as new data arrives.
+- They run while the app is open and continue while it's in the
+  background, but they don't persist across a full app restart.
 
-That last point matters: monitors are good for "I'm using the app right
-now and don't want to miss this." They're **not** a substitute for a
-proper alerting system on the robot.
+That makes monitors ideal for "I'm working with the robot right now and
+don't want to miss this." They're **not** a replacement for a permanent
+alerting system on the robot itself.
 
 ## Listing and stopping monitors
 
-In chat:
+Ask Scry to list your active monitors:
 
 ```
 list my active monitors
 ```
 
-The agent calls `monitor_list` which returns active monitors with their
-IDs, conditions, and current values. The reply renders as a chip strip
-above the composer with a **Stop** button on each chip.
-
-You can also tell the agent:
+You'll get each monitor's condition and current value, rendered as a
+chip strip above the composer with a **Stop** button on each chip. You
+can also just tell Scry:
 
 ```
 stop the /odom monitor
 ```
 
-And it'll call `cancel_monitor` for you.
+and it'll cancel it for you.
 
 ## Notifications when the app is backgrounded
 

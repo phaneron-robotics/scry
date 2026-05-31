@@ -1,6 +1,6 @@
 # Voice input
 
-Talk to your robot. The agent transcribes locally and you tap send.
+Talk to your robot. Scry transcribes locally and you tap send.
 
 ## How to use
 
@@ -30,13 +30,12 @@ or in Android Settings → Apps → Scry → Permissions.
 
 ## Where the audio goes
 
-Android `SpeechRecognizer` — Google's standard on-device API. On most
-modern Pixels and Samsungs from 2022+ the recognition runs **fully
-on-device** (Live Caption uses the same model). On older phones it may
-fall back to a Google network call.
+Voice uses Android's built-in speech recognition. On most modern phones
+(Pixels and Samsungs from 2022 onward) recognition runs **fully
+on-device**; on older phones it may fall back to a Google network call.
 
-Scry doesn't ship audio anywhere. The agent only sees the final text
-transcript, just like if you'd typed it.
+Scry doesn't send audio anywhere itself. Scry only ever sees the final
+text transcript, exactly as if you'd typed it.
 
 ## When voice fails
 
