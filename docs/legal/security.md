@@ -21,8 +21,8 @@ Please include:
 
 - A description of the vulnerability and its potential impact
 - Steps to reproduce, ideally with a minimum proof of concept
-- The affected component(s): `scry-connect`, `scry-android`,
-  `scry-docs`, etc.
+- The affected component: the Scry app, the `scry-connect` server, or
+  the documentation site
 - The affected version(s) if known
 - Any suggested mitigations or fixes
 
@@ -47,18 +47,16 @@ Severity guidelines for fix timing:
 - **Medium / Low**: bundled into the next normal release
 
 We follow **coordinated disclosure**: once a fix is available, we
-publish a GitHub Security Advisory crediting the reporter (with their
+publish a security advisory crediting the reporter (with their
 permission) and assign a CVE if applicable.
 
 ## Scope
 
 In scope:
 
-- `scry-connect` (Python MCP server running on robots)
-- `scry-android` (Android app)
-- `scry-ios` (when released)
-- Default configurations and install scripts in `scry` /
-  `robot-setup/`
+- The Scry app (Android, and iOS when released)
+- `scry-connect`, the server that runs on robots
+- The default configuration and the published install script
 
 Out of scope:
 

@@ -1,8 +1,6 @@
 site_name: Scry
-site_description: AI-first debugging for ROS 2 robots, from your Android phone.
+site_description: AI-first debugging for ROS 2 robots, from your phone.
 site_url: https://phaneron-robotics.github.io/scry/
-repo_url: https://github.com/phaneron-robotics/scry
-repo_name: phaneron-robotics/scry
 edit_uri: ""
 
 copyright: Copyright &copy; 2026 Phaneron Robotics, Inc.
@@ -12,8 +10,6 @@ theme:
   custom_dir: overrides
   logo: assets/scry-mark.svg
   favicon: assets/favicon.svg
-  icon:
-    repo: fontawesome/brands/github
   palette:
     # Dark mode — Scry brand default.
     - scheme: slate
