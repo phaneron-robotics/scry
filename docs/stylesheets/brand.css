@@ -1,0 +1,631 @@
+/* ============================================================
+   Scry — brand stylesheet
+   Source of truth: scry-brand/BRAND.md
+   Warm graphite + olive accent. Dark-first.
+   ============================================================ */
+
+:root {
+  /* Brand primitives */
+  --scry-graphite:        #1C1B19;
+  --scry-surface-raised:  #292826;
+  --scry-surface-high:    #3A3835;
+  --scry-bar:             #6B6B5E;
+  --scry-accent:          #A3B86C;
+  --scry-accent-dim:      #4D5C2F;
+  --scry-accent-hover:    #B8CB87;
+
+  --scry-text-primary:    #E8E4D9;
+  --scry-text-secondary:  #9C9A8D;
+  --scry-text-tertiary:   #6B6B5E;
+
+  --scry-success:         #A3B86C;
+  --scry-warning:         #D4A056;
+  --scry-danger:          #C97064;
+  --scry-info:            #8FA8C7;
+
+  --scry-outline:         #3A3835;
+
+  /* Light variants — warm cream */
+  --scry-light-bg:        #F7F5EE;
+  --scry-light-surface:   #FAF8F1;
+  --scry-light-surface-2: #EFECE3;
+  --scry-light-outline:   #C5C2B8;
+  --scry-light-text:      #1C1B19;
+  --scry-light-text-2:    #4A4A42;
+  --scry-light-accent:    #4D5C2F;
+}
+
+/* ── Dark scheme (default) ────────────────────────────────── */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color:               var(--scry-graphite);
+  --md-default-bg-color--light:        var(--scry-surface-raised);
+  --md-default-bg-color--lighter:      var(--scry-surface-high);
+  --md-default-bg-color--lightest:     var(--scry-surface-high);
+
+  --md-default-fg-color:               var(--scry-text-primary);
+  --md-default-fg-color--light:        var(--scry-text-secondary);
+  --md-default-fg-color--lighter:      var(--scry-text-tertiary);
+  --md-default-fg-color--lightest:     var(--scry-outline);
+
+  --md-primary-fg-color:               var(--scry-graphite);
+  --md-primary-fg-color--light:        var(--scry-surface-raised);
+  --md-primary-fg-color--dark:         var(--scry-graphite);
+  --md-primary-bg-color:               var(--scry-text-primary);
+  --md-primary-bg-color--light:        var(--scry-text-secondary);
+
+  --md-accent-fg-color:                var(--scry-accent);
+  --md-accent-fg-color--transparent:   rgba(163, 184, 108, 0.10);
+  --md-accent-bg-color:                var(--scry-graphite);
+  --md-accent-bg-color--light:         var(--scry-surface-raised);
+
+  --md-typeset-color:                  var(--scry-text-primary);
+  --md-typeset-a-color:                var(--scry-accent);
+
+  --md-code-bg-color:                  var(--scry-surface-raised);
+  --md-code-fg-color:                  var(--scry-text-primary);
+  --md-code-hl-color:                  rgba(163, 184, 108, 0.18);
+
+  --md-footer-bg-color:                var(--scry-graphite);
+  --md-footer-bg-color--dark:          #0F0E0D;
+  --md-footer-fg-color:                var(--scry-text-primary);
+  --md-footer-fg-color--light:         var(--scry-text-secondary);
+  --md-footer-fg-color--lighter:       var(--scry-text-tertiary);
+
+  --md-admonition-bg-color:            var(--scry-surface-raised);
+  --md-admonition-fg-color:            var(--scry-text-primary);
+
+  --md-typeset-table-color:            var(--scry-outline);
+}
+
+/* ── Light scheme ─────────────────────────────────────────── */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color:               var(--scry-light-bg);
+  --md-default-bg-color--light:        var(--scry-light-surface);
+  --md-default-bg-color--lighter:      var(--scry-light-surface-2);
+  --md-default-bg-color--lightest:     var(--scry-light-surface-2);
+
+  --md-default-fg-color:               var(--scry-light-text);
+  --md-default-fg-color--light:        var(--scry-light-text-2);
+  --md-default-fg-color--lighter:      var(--scry-bar);
+  --md-default-fg-color--lightest:     var(--scry-light-outline);
+
+  --md-primary-fg-color:               var(--scry-graphite);
+  --md-primary-fg-color--light:        var(--scry-surface-raised);
+  --md-primary-fg-color--dark:         var(--scry-graphite);
+  --md-primary-bg-color:               var(--scry-text-primary);
+  --md-primary-bg-color--light:        var(--scry-text-secondary);
+
+  --md-accent-fg-color:                var(--scry-light-accent);
+  --md-accent-fg-color--transparent:   rgba(77, 92, 47, 0.10);
+  --md-accent-bg-color:                var(--scry-light-bg);
+
+  --md-typeset-color:                  var(--scry-light-text);
+  --md-typeset-a-color:                var(--scry-light-accent);
+
+  --md-code-bg-color:                  var(--scry-light-surface-2);
+  --md-code-fg-color:                  var(--scry-light-text);
+  --md-code-hl-color:                  rgba(77, 92, 47, 0.15);
+
+  --md-footer-bg-color:                var(--scry-graphite);
+  --md-footer-bg-color--dark:          #0F0E0D;
+  --md-footer-fg-color:                var(--scry-text-primary);
+  --md-footer-fg-color--light:         var(--scry-text-secondary);
+  --md-footer-fg-color--lighter:       var(--scry-text-tertiary);
+
+  --md-typeset-table-color:            var(--scry-light-outline);
+}
+
+/* ── Global ──────────────────────────────────────────────── */
+body {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.md-typeset {
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset h1 {
+  font-size: 2.0rem;
+  margin: 0 0 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.md-typeset h2 {
+  font-size: 1.4rem;
+  margin: 2.2rem 0 0.9rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset h3 {
+  font-size: 1.05rem;
+  margin: 1.6rem 0 0.6rem;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.md-header {
+  background-color: var(--scry-graphite);
+  border-bottom: 1px solid var(--scry-outline);
+  box-shadow: none;
+}
+
+[data-md-color-scheme="default"] .md-header {
+  background-color: var(--scry-graphite);
+  color: var(--scry-text-primary);
+}
+
+.md-header__title {
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: var(--scry-text-primary);
+}
+
+.md-header__topic:first-child {
+  font-weight: 500;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.6rem;
+  width: 1.6rem;
+}
+
+/* ── Tabs (top nav row) ──────────────────────────────────── */
+.md-tabs {
+  background-color: var(--scry-graphite);
+  border-bottom: 1px solid var(--scry-outline);
+  color: var(--scry-text-secondary);
+}
+
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: var(--scry-graphite);
+  color: var(--scry-text-secondary);
+}
+
+.md-tabs__link {
+  font-weight: 400;
+  opacity: 0.78;
+  font-size: 0.74rem;
+  letter-spacing: 0.005em;
+}
+
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+  color: var(--scry-text-primary);
+}
+
+.md-tabs__link--active {
+  font-weight: 500;
+}
+
+/* ── Sidebar / navigation ────────────────────────────────── */
+.md-nav__title {
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-nav__link {
+  font-size: 0.74rem;
+  margin: 0.15rem 0;
+}
+
+.md-nav__link--active,
+.md-nav__link[aria-current] {
+  color: var(--md-accent-fg-color);
+  font-weight: 500;
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+.md-search__form {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--scry-outline);
+  border-radius: 6px;
+}
+
+.md-search__form:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+  background-color: var(--scry-surface-raised);
+  border-color: var(--scry-accent-dim);
+}
+
+/* ── Links ───────────────────────────────────────────────── */
+.md-typeset a {
+  color: var(--md-typeset-a-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.md-typeset a:hover {
+  color: var(--md-accent-fg-color);
+  border-bottom-color: var(--md-accent-fg-color);
+}
+
+/* ── Code ────────────────────────────────────────────────── */
+.md-typeset code {
+  font-feature-settings: "calt" 0;
+  font-size: 0.78em;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset pre > code {
+  border: none;
+  padding: 1rem;
+  font-size: 0.78em;
+  line-height: 1.55;
+}
+
+.md-typeset .highlight {
+  border-radius: 6px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  overflow: hidden;
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+.md-typeset table:not([class]) {
+  font-size: 0.74rem;
+  border: 1px solid var(--md-typeset-table-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-default-bg-color--light);
+  color: var(--md-default-fg-color);
+  font-weight: 500;
+  border-bottom: 1px solid var(--md-typeset-table-color);
+}
+
+.md-typeset table:not([class]) td {
+  border-top: 1px solid var(--md-typeset-table-color);
+}
+
+/* ── Admonitions ─────────────────────────────────────────── */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 6px;
+  border-width: 1px;
+  border-left-width: 3px;
+  font-size: 0.74rem;
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.md-typeset .md-button {
+  background-color: transparent;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  color: var(--md-default-fg-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+  transition: all 0.15s ease;
+}
+
+.md-typeset .md-button:hover {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+  background-color: var(--md-accent-fg-color--transparent);
+}
+
+.md-typeset .md-button--primary {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--scry-graphite);
+}
+
+.md-typeset .md-button--primary:hover {
+  background-color: var(--scry-accent-hover);
+  border-color: var(--scry-accent-hover);
+  color: var(--scry-graphite);
+}
+
+[data-md-color-scheme="default"] .md-typeset .md-button--primary {
+  color: #FFFFFF;
+}
+
+[data-md-color-scheme="default"] .md-typeset .md-button--primary:hover {
+  color: #FFFFFF;
+  background-color: #3D4B25;
+  border-color: #3D4B25;
+}
+
+/* ── Grid cards (homepage) ───────────────────────────────── */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid > .card {
+  background-color: var(--md-default-bg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 1.2rem 1.3rem;
+  transition: all 0.18s ease;
+  box-shadow: none;
+}
+
+.md-typeset .grid.cards > ul > li:hover,
+.md-typeset .grid > .card:hover {
+  border-color: var(--md-accent-fg-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+}
+
+.md-typeset .grid.cards > ul > li > p:first-child,
+.md-typeset .grid > .card > p:first-child {
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--md-default-fg-color);
+  margin-bottom: 0.4rem;
+}
+
+.md-typeset .grid.cards > ul > li > hr {
+  display: none;
+}
+
+.md-typeset .grid.cards > ul > li > p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.md-footer {
+  background-color: var(--scry-graphite);
+  border-top: 1px solid var(--scry-outline);
+}
+
+.md-footer-meta {
+  background-color: #0F0E0D;
+}
+
+.md-footer-meta__inner {
+  padding: 1rem 0.6rem;
+}
+
+.md-copyright {
+  color: var(--scry-text-tertiary);
+  font-size: 0.68rem;
+}
+
+.md-social__link svg {
+  fill: var(--scry-text-secondary);
+  transition: fill 0.15s ease;
+}
+
+.md-social__link:hover svg {
+  fill: var(--scry-accent);
+}
+
+/* ── Scrollbar (webkit) ──────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scry-outline);
+  border-radius: 5px;
+  border: 2px solid var(--md-default-bg-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scry-bar);
+}
+
+/* ── Hero (homepage only) ────────────────────────────────── */
+.scry-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem 2.4rem;
+  margin: -1.5rem -0.8rem 2.4rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(163, 184, 108, 0.05) 0%,
+      transparent 60%
+    );
+}
+
+.scry-hero__mark {
+  width: 88px;
+  height: 88px;
+  margin-bottom: 1.4rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.scry-hero__title {
+  font-size: 2.6rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--md-default-fg-color);
+  margin: 0 0 0.4rem;
+  line-height: 1.05;
+}
+
+.scry-hero__title-accent {
+  color: var(--scry-accent);
+}
+
+.scry-hero__tagline {
+  font-size: 1.0rem;
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+  max-width: 36rem;
+  margin: 0 auto 1.4rem;
+  letter-spacing: 0.005em;
+}
+
+.scry-hero__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media screen and (max-width: 600px) {
+  .scry-hero {
+    padding: 2.2rem 0.8rem 1.8rem;
+  }
+  .scry-hero__mark {
+    width: 72px;
+    height: 72px;
+  }
+  .scry-hero__title {
+    font-size: 2.0rem;
+  }
+  .scry-hero__tagline {
+    font-size: 0.92rem;
+  }
+}
+
+/* ── Section eyebrow ─────────────────────────────────────── */
+.scry-eyebrow {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--scry-accent);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Diagram block (the ASCII pipeline) ──────────────────── */
+.md-typeset pre.scry-diagram,
+.md-typeset .scry-diagram pre {
+  background-color: var(--md-default-bg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-left: 3px solid var(--scry-accent);
+  color: var(--md-default-fg-color--light);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+/* ── Misc polish ─────────────────────────────────────────── */
+.md-typeset blockquote {
+  border-left: 3px solid var(--scry-accent);
+  color: var(--md-default-fg-color--light);
+  padding-left: 1rem;
+  margin-left: 0;
+}
+
+.md-typeset hr {
+  border-color: var(--md-default-fg-color--lightest);
+  margin: 2.2rem 0;
+}
+
+.md-typeset kbd {
+  background-color: var(--md-default-bg-color--light);
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--md-default-fg-color);
+  font-size: 0.72em;
+  padding: 0.1em 0.4em;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--scry-accent-dim);
+  color: var(--scry-text-primary);
+}
+
+[data-md-color-scheme="default"] ::selection {
+  background-color: rgba(77, 92, 47, 0.25);
+  color: var(--scry-light-text);
+}
+
+/* ── Mermaid diagrams ────────────────────────────────────── */
+/* Style the mermaid SVG output and the secondary line spans
+   used inside node labels. */
+.md-typeset .mermaid {
+  background-color: var(--md-default-bg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 1.4rem 1rem;
+  margin: 1.4rem 0;
+  text-align: center;
+}
+
+.md-typeset .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Brand fonts for nodes — mermaid hard-codes "trebuchet ms"
+   unless we override at the SVG level. */
+.md-typeset .mermaid .nodeLabel,
+.md-typeset .mermaid .edgeLabel,
+.md-typeset .mermaid .cluster-label,
+.md-typeset .mermaid foreignObject div {
+  font-family: "Inter", "system-ui", "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Secondary text inside a node — wrap with <span class="m-sub"> */
+.md-typeset .mermaid .m-sub {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78em;
+  font-weight: 400;
+  color: var(--scry-text-secondary);
+  letter-spacing: 0.01em;
+}
+
+/* Bold inside node labels — already from <b>, just tone it */
+.md-typeset .mermaid b,
+.md-typeset .mermaid strong {
+  font-weight: 500;
+  color: var(--scry-text-primary);
+}
+
+/* Edge labels — soften the bar/divider color so they read as
+   secondary annotations. */
+.md-typeset .mermaid .edgeLabel rect {
+  fill: var(--md-default-bg-color--light) !important;
+}
+
+.md-typeset .mermaid .edgeLabel {
+  color: var(--scry-text-secondary) !important;
+  font-size: 0.78em;
+}
+
+/* Light scheme adjustments */
+[data-md-color-scheme="default"] .md-typeset .mermaid .m-sub {
+  color: var(--scry-light-text-2);
+}
+[data-md-color-scheme="default"] .md-typeset .mermaid b,
+[data-md-color-scheme="default"] .md-typeset .mermaid strong {
+  color: var(--scry-light-text);
+}

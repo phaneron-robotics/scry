@@ -63,3 +63,9 @@ coverage/
 *.orig
 *.bak
 *.rej
+
+# ── MkDocs (docs site) ────────────────────────────────────────────
+site/
+.venv*/
+__pycache__/
+*.pyc
