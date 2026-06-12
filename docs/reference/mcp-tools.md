@@ -1,8 +1,8 @@
 # What Scry can do
 
 This is the full catalogue of what Scry can inspect and do on a robot
-through `scry-connect` — **103 capabilities**, grouped by area. Of
-these, **31 change the robot** and always require your approval on the
+through `scry-connect` — **118 capabilities**, grouped by area. Of
+these, **37 change the robot** and always require your approval on the
 phone; the rest are read-only.
 
 You don't call any of these directly — you ask Scry in plain language
@@ -28,8 +28,9 @@ the publish rate of `/odom`").
 Scry groups its capabilities into areas — topics, services, nodes,
 parameters, actions, lifecycle, performance, transforms (TF), control,
 components, packages, interfaces, processes, watchers, diagnostics,
-logs, network, bags, doctor, daemon, extensions, build, system, Docker,
-Nav2, and teleop. The tables below list what's in each.
+logs, network, bags (including recording), doctor, daemon, extensions,
+build, system, Docker, Nav2, teleop, the host shell, and the robot's
+incident memory. The tables below list what's in each.
 
 ## Tool groups
 
@@ -39,9 +40,9 @@ Nav2, and teleop. The tables below list what's in each.
 | Service | `ros_list_services`, `ros_find_services_by_type`, `ros_service_type`, `ros_service_info`, `ros_service_echo` | `ros_call_service` |
 | Node | `ros_list_nodes`, `ros_list_nodes_with_resources`, `ros_inspect_node` | — |
 | Parameter | `ros_list_parameters`, `ros_get_parameter`, `ros_describe_parameter`, `ros_dump_parameters` | `ros_set_parameter`, `ros_load_parameters`, `ros_delete_parameter` |
-| Action | `ros_list_actions`, `ros_action_type`, `ros_action_info` | `ros_send_action_goal` |
+| Action | `ros_list_actions`, `ros_action_type`, `ros_action_info` | `ros_send_action_goal`, `ros_cancel_action_goal` |
 | Lifecycle | `ros_lifecycle_nodes`, `ros_lifecycle_get`, `ros_lifecycle_list_transitions` | `ros_lifecycle_set` |
-| Package | `ros_list_packages`, `ros_pkg_prefix`, `ros_pkg_executables`, `ros_pkg_xml` | `ros_pkg_create` |
+| Package | `ros_list_packages`, `ros_pkg_prefix`, `ros_pkg_executables`, `ros_pkg_launch_files`, `ros_pkg_xml` | `ros_pkg_create` |
 | Component | `ros_component_list`, `ros_component_types` | `ros_component_load`, `ros_component_unload`, `ros_component_standalone` |
 | ros2_control | `ros_control_list_controllers`, `ros_control_list_controller_types`, `ros_control_list_hardware_components`, `ros_control_list_hardware_interfaces`, `ros_control_view_controller_chains` | `ros_control_load_controller`, `ros_control_unload_controller`, `ros_control_set_controller_state`, `ros_control_switch_controllers`, `ros_control_reload_controller_libraries`, `ros_control_cleanup_controller`, `ros_control_set_hardware_component_state` |
 | Daemon | `ros_daemon_status` | `ros_daemon_start`, `ros_daemon_stop` |
@@ -49,9 +50,9 @@ Nav2, and teleop. The tables below list what's in each.
 | Doctor / WTF | `ros_doctor`, `ros_doctor_hello` | — |
 | Extensions | `ros_extensions` | — |
 | Interface | `ros_list_interfaces`, `ros_show_interface` | — |
-| Bag | `ros_bag_info` | — |
+| Bag | `ros_bag_info`, `ros_bag_record_status`, `ros_bag_list` | `ros_bag_record_start`, `ros_bag_record_stop` |
 | DDS / env | `ros_get_dds_info`, `ros_get_dds_env`, `ros_network_interfaces` | — |
-| Diagnostics | `ros_get_diagnostics`, `ros_check_health`, `ros_get_recent_logs`, `ros_liveness` | — |
+| Diagnostics | `ros_get_diagnostics`, `ros_check_health`, `ros_get_recent_logs`, `ros_liveness`, `ros_graph_diff` | — |
 | TF | `ros_tf_frames`, `ros_tf_lookup` | — |
 | Watchers | `ros_watch_topic`, `ros_watch_diagnostics`, `ros_watch_node`, `ros_wait_for_topic` | — |
 | Process | `ros_list_processes`, `ros_list_system_processes`, `ros_system_processes`, `ros_tail_process` | `ros_run_node`, `ros_run_launch`, `ros_run_script`, `ros_restart_launched`, `ros_kill_process` |
@@ -61,6 +62,8 @@ Nav2, and teleop. The tables below list what's in each.
 | Behaviour tree | `ros_bt_list_sources`, `ros_bt_get_active_tree`, `ros_bt_status` | — |
 | Teleop | — | `ros_teleop_start`, `ros_teleop_set`, `ros_teleop_stop` |
 | Docker | `ros_docker_status`, `ros_docker_inspect`, `ros_docker_logs` | — |
+| Host shell | `ros_shell_read`, `ros_query_shell_job`, `ros_list_shell_jobs` | `ros_shell_exec`, `ros_kill_shell_job` |
+| Incidents | `ros_search_incidents`, `ros_get_incident` | `ros_save_incident` |
 
 ---
 
@@ -409,6 +412,53 @@ Useful when the robot runs Nav2 / drivers in containers.
 - `ros_docker_status` — aggregate snapshot: daemon availability, version, container list, per-running-container live stats (CPU %, mem, IO).
 - `ros_docker_inspect` — `docker inspect` for one container.
 - `ros_docker_logs` — last N lines from a container's stdout.
+
+---
+
+## Bag recording
+
+Record topics to an [mcap](https://mcap.dev) bag on the robot — pick the
+topics (or everything), let it run, then download the result from the
+app's Viz → Bag page or share it with your team.
+
+- `ros_bag_record_start` — **write**. Start a background `ros2 bag record -s mcap`; explicit topic list or all topics, optional name and auto-stop duration. Bags land under `~/ros2_bags` (`SCRY_BAG_ROOT` to change).
+- `ros_bag_record_stop` — **write**. Stop cleanly (finalizes the mcap + metadata).
+- `ros_bag_record_status` / `ros_bag_list` — recording progress (elapsed, size) and every bag on the robot, with download routes (`GET /bags/<name>` streams a tar).
+
+---
+
+## Graph history
+
+- `ros_graph_diff` — "it worked five minutes ago, what changed?" in one call. The connect samples the graph every 30 s (2 h of history); this diffs now against the snapshot closest to `since_seconds` ago and returns nodes/topics/services added & removed plus per-topic publisher/subscriber changes.
+
+---
+
+## Goal cancellation
+
+- `ros_cancel_action_goal` — **write**. Cancel **all** active goals on an action server (stop an in-flight navigation), whoever sent them. `ros_send_action_goal` also auto-cancels its own goal if the result doesn't arrive within its timeout, so a timed-out navigation never keeps the robot driving.
+
+---
+
+## Host shell
+
+The last resort for host-level work with no ROS tool (systemd, configs,
+disk, clock). Inspection commands run freely; anything state-changing
+pauses for your approval like every other write.
+
+- `ros_shell_read` — inspection commands only (mutation-shaped commands are refused robot-side; secret paths always refused).
+- `ros_shell_exec` — **write**. State-changing command; `background=true` for anything long, with job tracking.
+- `ros_query_shell_job` / `ros_list_shell_jobs` / `ros_kill_shell_job` (**write**) — background-job status, list, abort.
+
+---
+
+## Incident memory
+
+Solved problems persist on the robot itself (`~/.scry/incidents/`), so
+the second time a fault appears Scry looks the fix up instead of
+re-deriving it — across phones and app reinstalls.
+
+- `ros_search_incidents` / `ros_get_incident` — keyword search past diagnosed-and-fixed problems; fetch one full record (symptom, root cause, fix, verification).
+- `ros_save_incident` — **write**. Save a record after a fix is verified.
 
 ---
 
