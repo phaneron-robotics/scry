@@ -17,6 +17,9 @@ and monitor diagnostics by chatting with an on-device AI assistant.
   <a href="get-started/" class="md-button md-button--primary">Get started</a>
   <a href="how-it-works/" class="md-button">How it works</a>
 </div>
+<div class="scry-hero__actions">
+  <a href="https://play.google.com/store/apps/details?id=com.phaneronrobotics.scry"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
+</div>
 </div>
 
 <span class="scry-eyebrow">What is Scry</span>

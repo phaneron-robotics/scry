@@ -13,9 +13,9 @@ from your phone over your own network.
 
     ---
 
-    Get Scry on Google Play.
+    <a href="https://play.google.com/store/apps/details?id=com.phaneronrobotics.scry"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
 
-    **Coming soon**
+    [Get Scry on Google Play](https://play.google.com/store/apps/details?id=com.phaneronrobotics.scry)
 
 -   :fontawesome-brands-app-store-ios: __iOS__
 
@@ -27,10 +27,9 @@ from your phone over your own network.
 
 </div>
 
-!!! note "Launching shortly"
-    Scry is rolling out to the Google Play Store and Apple App Store.
-    The download links above will go live here as soon as each store
-    listing is published.
+!!! note "iOS"
+    The Android app is live on Google Play. iOS is coming — the App
+    Store link will appear here when the listing is published.
 
 ## What you'll need
 
