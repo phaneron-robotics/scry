@@ -17,8 +17,9 @@ and monitor diagnostics by chatting with an on-device AI assistant.
   <a href="get-started/" class="md-button md-button--primary">Get started</a>
   <a href="how-it-works/" class="md-button">How it works</a>
 </div>
-<div class="scry-hero__actions">
-  <a href="https://play.google.com/store/apps/details?id=com.phaneronrobotics.scry"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
+<div class="scry-hero__badges">
+  <a class="scry-badge" href="https://play.google.com/store/apps/details?id=com.phaneronrobotics.scry" aria-label="Get the Scry app on Google Play"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play"></a>
+  <a class="scry-badge" href="https://pypi.org/project/scry-connect/" aria-label="Install scry-connect on your robot from PyPI"><img src="assets/pypi-badge.svg" alt="Install scry-connect on your robot from PyPI"></a>
 </div>
 </div>
 
