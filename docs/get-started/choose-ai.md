@@ -29,9 +29,9 @@ camera frame, it also needs **vision**. Three good starting points:
 
 | For… | Model | Notes |
 |------|-------|-------|
-| **Best free, general use** | `openai/gpt-oss-120b:free` | The default. Free, reliable, no credit card. Text only. |
-| **Best free, with images** | `google/gemma-4-26b-a4b-it:free` | Free and multimodal — handles text *and* images and supports tool calling. Use it when you attach photos or inspect camera frames. |
-| **Best paid, deepest reasoning** | `anthropic/claude-haiku-4-5` | Fast, inexpensive, excellent at multi-step diagnosis. |
+| **Best free, general use** | `openai/gpt-oss-120b:free` | The default, and one of the app's one-tap picks. Free, reliable, no credit card. Text only. |
+| **Strong free alternative** | `z-ai/glm-4.5-air:free` | A one-tap pick in the app. Free, capable on tool-calling, good when the default is busy. |
+| **Best paid, deepest reasoning** | `anthropic/claude-3.5-haiku` | The app's one-tap paid pick. Fast, inexpensive, excellent at multi-step diagnosis, and supports vision for image attachments. |
 
 !!! tip "Picking your own model"
     Browse the full catalogue at

@@ -529,7 +529,38 @@ body {
   justify-content: center;
 }
 
+/* App + robot store badges under the hero buttons. Kept deliberately
+   small so they read as a secondary, supporting CTA below the primary
+   "Get started" button. */
+.scry-hero__badges {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1.1rem;
+}
+
+.scry-badge {
+  display: inline-flex;
+  border-radius: 9px;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.scry-badge:hover {
+  transform: translateY(-1px);
+  opacity: 0.88;
+}
+
+.scry-badge img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
 @media screen and (max-width: 600px) {
+  .scry-badge img {
+    height: 40px;
+  }
   .scry-hero {
     padding: 2.2rem 0.8rem 1.8rem;
   }

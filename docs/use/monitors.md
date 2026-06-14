@@ -1,28 +1,33 @@
 # Background monitors
 
-Set a condition like "alert me if `/odom` drops below 10 Hz" — Scry
-watches in the background and fires an alert into chat the moment the
-condition trips.
+Set a condition like "alert me if the battery drops below 20%" — Scry
+watches a numeric field on a topic in the background and fires an alert
+into chat the moment the condition trips.
 
 ## How to set one
 
 Just ask Scry:
 
 ```
-Watch /odom and alert me if its rate drops below 10 Hz.
+Watch /battery_state and alert me if percentage drops below 20.
 ```
 
 Scry sets up the monitor and confirms it in chat ("Monitor armed:
-/odom rate < 10 Hz"). The monitor is now live.
+/battery_state.percentage < 20"). The monitor is now live.
 
-You can also set monitors on:
+A monitor watches a **numeric field on a topic** against a threshold,
+using a comparison like below / above / equals. Examples:
 
-- **Topic message field values** — "alert me if `/battery_state.percentage`
-  drops below 20"
-- **Topic publish rates** — as above
-- **Service availability** — "alert me if `/global_costmap/clear_entirely_global_costmap`
-  becomes unavailable"
-- **Node liveness** — "alert me if `/navigation_lifecycle_manager` dies"
+- "alert me if `/battery_state.percentage` drops below 20"
+- "tell me when `/cpu_temp.temperature` goes above 80"
+- "watch `/odom.pose.pose.position.x` and ping me when it passes 5"
+
+!!! note "What monitors watch today"
+    Monitors compare a numeric field against a threshold. Conditions
+    like publish-rate, service availability, or "node X died" aren't
+    background monitors yet — for those, ask Scry to check them directly
+    in chat (e.g. "is `/odom` still publishing?", "is the costmap-clear
+    service available?").
 
 ## Edge-triggered, not level-triggered
 
@@ -38,7 +43,7 @@ changed, not a stream of "still bad."
 
 When a monitor trips, an **assistant message** appears in chat:
 
-> Note: Monitor fired: `/odom rate < 10 Hz` — current value 7.4 Hz
+> Note: Monitor fired: `/battery_state.percentage < 20` — current value 18.4
 >
 > [robot context excerpt]
 
@@ -47,7 +52,7 @@ brand mark). Difference is the Note: glyph and the explicit "Monitor
 fired" prefix.
 
 Scry sees this message on the next turn, so you can ask follow-ups like
-"what's causing the rate drop?" and it'll have full context.
+"what's draining the battery?" and it'll have full context.
 
 ## Where monitors run
 
@@ -75,7 +80,7 @@ chip strip above the composer with a **Stop** button on each chip. You
 can also just tell Scry:
 
 ```
-stop the /odom monitor
+stop the battery monitor
 ```
 
 and it'll cancel it for you.

@@ -43,13 +43,14 @@ For feedback that isn't tied to one specific reply:
 2. Tap **Feedback**
 3. Pick **General**, **Bug**, or **Feature**
 4. Pick a sentiment (Good / Neutral / Bad)
-5. Optional: 1–5 stars
-6. Optional: free-form comment
-7. Tap **Send feedback**
+5. Optional: free-form comment
+6. Tap **Send feedback**
 
-You need at least one of (sentiment, stars, comment) — pure empty
-submissions are rejected client-side. The submit button is disabled
-otherwise.
+You need at least one of (sentiment, comment). Tapping **Send** with
+nothing filled in shows an inline error asking you to pick a sentiment
+or write something. (A separate "Rate us on Google Play" invite appears
+on the thank-you screen after you submit — that's the Play rating, not
+part of the form.)
 
 ## Where this lands
 
@@ -58,13 +59,14 @@ otherwise.
 | Phaneron Robotics' secure database | One row per submission, visible only to you and to Phaneron. |
 | Phaneron Robotics review | The team triages feedback regularly and updates its status as it's reviewed and addressed. |
 
-## Disabling
+## Sign-in and opting out
 
-Inline thumbs and the feedback form both **require sign-in**. If you
-don't have a Phaneron account, the inline icons hide and the Feedback
-settings page tells you to sign in first.
+Sending feedback **requires sign-in**, but that's enforced only when you
+submit: the thumbs and the Feedback form are always visible. If you're
+signed out, tapping a thumb or hitting **Send** surfaces an error
+("Couldn't send feedback…") instead of submitting — the controls don't
+disappear.
 
-The feature is on by default and there's currently no in-app toggle
-to disable it. If you want to opt out entirely, don't tap the thumbs
-and don't submit the form. Nothing is ever sent without an explicit
-tap.
+The feature is on by default and there's currently no in-app toggle to
+disable it. If you want to opt out entirely, don't tap the thumbs and
+don't submit the form. Nothing is ever sent without an explicit tap.

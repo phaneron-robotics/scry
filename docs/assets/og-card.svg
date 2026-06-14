@@ -36,7 +36,7 @@
     <text y="142" font-size="56" font-weight="500" letter-spacing="-1.2">for ROS 2 robots.</text>
     <text y="210" font-size="22" font-weight="400" fill="#9C9A8D" letter-spacing="0.2">
       <tspan>From your Android phone.</tspan>
-      <tspan x="0" dy="32">No cloud backend. No telemetry.</tspan>
+      <tspan x="0" dy="32">Your robot data stays on your network. No telemetry.</tspan>
     </text>
   </g>
 

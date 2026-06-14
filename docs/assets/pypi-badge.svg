@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="54" viewBox="0 0 180 54" role="img" aria-label="Install on your robot from PyPI">
+  <title>Install on your robot from PyPI</title>
+  <rect x="0.5" y="0.5" width="179" height="53" rx="8.5" fill="#000" stroke="#A6A6A6"/>
+  <!-- PyPI snake-ish mark in brand blue/yellow -->
+  <g transform="translate(14 12)">
+    <path d="M14 0 C6.8 0 7.3 3.1 7.3 3.1 L7.3 6.4 L14.2 6.4 L14.2 7.4 L4.6 7.4 C4.6 7.4 0 6.9 0 14.1 C0 21.3 4 21 4 21 L6.4 21 L6.4 17.5 C6.4 17.5 6.3 13.5 10.3 13.5 L17.2 13.5 C17.2 13.5 21 13.6 21 9.9 L21 3.7 C21 3.7 21.6 0 14 0 Z M10.2 2.2 C10.9 2.2 11.4 2.8 11.4 3.5 C11.4 4.2 10.9 4.7 10.2 4.7 C9.5 4.7 9 4.2 9 3.5 C9 2.8 9.5 2.2 10.2 2.2 Z" fill="#3775A9"/>
+    <path d="M14.2 28 C21.4 28 20.9 24.9 20.9 24.9 L20.9 21.6 L14 21.6 L14 20.6 L23.6 20.6 C23.6 20.6 28.2 21.1 28.2 13.9 C28.2 6.7 24.2 7 24.2 7 L21.8 7 L21.8 10.5 C21.8 10.5 21.9 14.5 17.9 14.5 L11 14.5 C11 14.5 7.2 14.4 7.2 18.1 L7.2 24.3 C7.2 24.3 6.6 28 14.2 28 Z M18 25.8 C17.3 25.8 16.8 25.2 16.8 24.5 C16.8 23.8 17.3 23.3 18 23.3 C18.7 23.3 19.2 23.8 19.2 24.5 C19.2 25.2 18.7 25.8 18 25.8 Z" fill="#FFD43B"/>
+  </g>
+  <!-- Text -->
+  <text x="52" y="20" fill="#fff" font-family="'Roboto','Helvetica Neue',Arial,sans-serif" font-size="9" letter-spacing="0.5">INSTALL ON ROBOT</text>
+  <text x="52" y="40" fill="#fff" font-family="'Roboto','Helvetica Neue',Arial,sans-serif" font-size="19" font-weight="500">PyPI</text>
+</svg>

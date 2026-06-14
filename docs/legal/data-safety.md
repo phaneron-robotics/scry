@@ -60,14 +60,24 @@ All **No**.
 |---|---|---|---|---|
 | Emails | No | — | — | — |
 | SMS / MMS | No | — | — | — |
-| **Other in-app messages** | **Yes** | **Yes** | **App functionality** — the chat content the user types is sent to the AI provider they chose. The AI's reply comes back to the device. We don't store it on any server we operate. | **Required** (this is the app's core feature) |
+| **Other in-app messages** | **Yes** | **Yes** | **App functionality** — the chat content the user types is sent to the AI provider they chose. The AI's reply comes back to the device. We don't store chat content on a server we operate, **except** the optional feedback excerpt below. | **Required** (this is the app's core feature) |
 
 When ticked, Play asks:
 - **Purposes:** App functionality.
 - **Processing purposes:** Optional → leave unticked.
 - **Is this data collected ephemerally?** No (we store chat history on device so it survives restarts).
 - **Is this data encrypted in transit?** Yes.
-- **Can users request deletion?** Yes (via Android Settings → Clear data).
+- **Can users request deletion?** Yes (via Android Settings → Clear data, and account/feedback deletion by email).
+
+!!! note "Optional feedback excerpt"
+    When a user taps the thumbs-up / thumbs-down on a reply, or uses
+    Settings → Feedback, Scry sends their **preceding prompt** (capped at
+    8 KB) and the **tool names** called that turn to a Supabase database
+    we operate — never the tool arguments, tool results, or assistant
+    text. This is user-initiated and disclosed in the
+    [Privacy policy §3.4](privacy.md). It's covered by the same Messages
+    data type; tick **collected** for our own backend in addition to
+    **shared** with the AI provider.
 
 ### Photos and videos
 
@@ -84,13 +94,15 @@ deletable via Clear data.
 
 | Sub-type | Collected? | Shared? | Why | Required / Optional |
 |---|---|---|---|---|
-| **Voice or sound recordings** | **No** | — | Audio captured by the voice-input feature is routed to Android's on-device `SpeechRecognizer`. The recognised **text** flows into chat, not the audio. | — |
+| **Voice or sound recordings** | **No** | — | Voice input launches Android's system speech-recognition dialog (`RecognizerIntent.ACTION_RECOGNIZE_SPEECH`). Only the recognised **text** flows into chat, never the audio. | — |
 | Music files | No | — | — | — |
 | Other audio | No | — | — | — |
 
-Be explicit in the optional notes field: "Voice input is converted to
-text on-device via Android SpeechRecognizer; the audio itself is not
-stored, transmitted, or read by Scry."
+Be explicit in the optional notes field: "Voice input uses Android's
+system speech-recognition dialog; only the recognized text reaches
+Scry. The audio is handled by the device's speech service (which may
+process it in the cloud) and is never stored, transmitted, or read by
+Scry."
 
 ### Files and docs
 

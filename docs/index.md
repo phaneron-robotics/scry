@@ -3,7 +3,7 @@ hide:
   - navigation
   - toc
 title: Scry — debug your ROS 2 robot from your phone
-description: Scry is a mobile app that lets you debug any ROS 2 robot through an on-device AI assistant. Inspect topics, call services, and monitor diagnostics by voice, text, or image, over your own network, with no cloud backend.
+description: Scry is a mobile app that lets you debug any ROS 2 robot through an on-device AI assistant. Inspect topics, call services, and monitor diagnostics by voice, text, or image, over your own network. Your robot and chat data never route through a Scry server.
 ---
 
 <div class="scry-hero" markdown>
@@ -17,6 +17,14 @@ and monitor diagnostics by chatting with an on-device AI assistant.
   <a href="get-started/" class="md-button md-button--primary">Get started</a>
   <a href="how-it-works/" class="md-button">How it works</a>
 </div>
+<div class="scry-hero__badges">
+  <a href="get-started/install-android/" class="scry-badge" aria-label="Get the Scry app on Google Play">
+    <img src="assets/google-play-badge.svg" alt="Get it on Google Play">
+  </a>
+  <a href="https://pypi.org/project/scry-connect/" class="scry-badge" aria-label="Install scry-connect on your robot from PyPI">
+    <img src="assets/pypi-badge.svg" alt="Install scry-connect on your robot from PyPI">
+  </a>
+</div>
 </div>
 
 <span class="scry-eyebrow">What is Scry</span>
@@ -28,8 +36,11 @@ topics, nodes, services, parameters, and diagnostics live over your
 network and answers with structured panels, plots, and links to deeper
 views.
 
-The phone does the work. The robot just exposes its ROS 2 graph. **No
-cloud backend. No telemetry. Your AI key, your robot, your network.**
+The phone does the work. The robot just exposes its ROS 2 graph. **Your
+robot and chat data never route through a Scry server, and there's no
+telemetry. Your AI key, your robot, your network.** A free account
+(synced via Supabase) signs you in and stores your profile across
+devices — see the [Privacy policy](legal/privacy.md).
 
 ---
 
@@ -56,8 +67,8 @@ cloud backend. No telemetry. Your AI key, your robot, your network.**
 
 -   :material-bell-ring: **Background monitors**
 
-    *"Alert me if `/odom` drops below 10 Hz."* Scry watches in the
-    background and pings you the moment a condition trips.
+    *"Alert me if the battery drops below 20%."* Scry watches a topic
+    field in the background and pings you the moment the threshold trips.
 
 -   :material-chart-line: **Live panels and plots**
 
@@ -66,8 +77,9 @@ cloud backend. No telemetry. Your AI key, your robot, your network.**
 
 -   :material-wifi-off: **Yours, end to end**
 
-    No cloud backend, no telemetry. Run it fully offline with a local
-    model. Your AI key, your robot, your network.
+    Your robot and chat data never touch a Scry server, and there's no
+    telemetry. Pair a local model and your conversations stay on your
+    network. Your AI key, your robot, your network.
 
 </div>
 
@@ -98,13 +110,15 @@ approval first. [Read more →](how-it-works.md)
 <span class="scry-eyebrow">What you need</span>
 
 - **A phone** running Android 9 or newer. (iOS coming soon.)
-- **A ROS 2 robot** running Humble, Iron, Jazzy, Kilted, Lyrical, or
-  Rolling.
+- **A ROS 2 robot** running Humble, Jazzy, Kilted, Lyrical, or Rolling.
 - **An AI provider.** OpenRouter is recommended — one key unlocks 300+
   models and has a free tier. Prefer fully offline? Point Scry at a
   local Ollama server. See [Choose your AI](get-started/choose-ai.md).
-- **Your network.** Phone and robot talk directly. Nothing routes
-  through a cloud.
+- **A free Scry account.** Sign in with Google, GitHub, or email to
+  sync your profile across devices. Your robot and chat data still flow
+  directly — only your profile lives on our server.
+- **Your network.** Phone and robot talk directly. Your robot data never
+  routes through a Scry cloud.
 
 ---
 
@@ -129,7 +143,8 @@ approval first. [Read more →](how-it-works.md)
 -   **How Scry works**
 
     The phone does the thinking, the robot just runs a small server.
-    Why there's no cloud backend, and how actions stay safe.
+    Why your robot data never routes through a Scry cloud, and how
+    actions stay safe.
 
     [How Scry works](how-it-works.md)
 

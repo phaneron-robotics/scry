@@ -17,8 +17,8 @@ In the chat composer (bottom of the Scry tab):
 3. The attachment shows as a chip above the composer.
 4. Type a question and send.
 
-You can attach multiple files in one message. Up to **5 attachments
-per turn**.
+You can attach up to **5 text/log files** plus **1 image** in a single
+message.
 
 ## Image attachments
 
@@ -36,7 +36,7 @@ Their vision model sees them; Phaneron Robotics does not.
 
 | Limit | Value |
 |---|---|
-| Max size | 1 MB (files over the cap are rejected with a warning, not truncated) |
+| Max size | 1 MB (files over the cap are skipped with a warning, not truncated) |
 | Format | Read as UTF-8 |
 | Filename | Preserved — shown in the chip and inlined in the prompt |
 

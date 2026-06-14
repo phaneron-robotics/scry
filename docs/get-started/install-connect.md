@@ -9,10 +9,9 @@ server; they differ only in how it's packaged and kept running.
 
 ## Requirements
 
-- **ROS 2** installed and sourced — Humble, Iron, Jazzy, Kilted,
-  Lyrical, or Rolling. Any middleware works (Fast-DDS, CycloneDDS,
-  Connext, Zenoh) — `scry-connect` follows whatever your robot already
-  uses.
+- **ROS 2** installed and sourced — Humble, Jazzy, Kilted, Lyrical, or
+  Rolling. Any middleware works (Fast-DDS, CycloneDDS, Connext, Zenoh) —
+  `scry-connect` follows whatever your robot already uses.
 - **Python 3.10+** (the Python that ships with ROS 2 is fine).
 - **Network access** — the robot must be reachable from your phone.
 - **~50 MB of disk.** No GPU, no root, no special hardware.
@@ -29,11 +28,12 @@ curl -fsSL https://raw.githubusercontent.com/phaneron-robotics/scry/master/insta
 ```
 
 Re-running the command upgrades an existing install in place. To force a
-particular method:
+particular method, set `SCRY_INSTALL_MODE` on the same line that pipes
+the script into `bash`:
 
 ```bash
-SCRY_INSTALL_MODE=docker bash    # always use Docker
-SCRY_INSTALL_MODE=pip bash       # always use pip + background service
+curl -fsSL https://raw.githubusercontent.com/phaneron-robotics/scry/master/install.sh | SCRY_INSTALL_MODE=docker bash    # always use Docker
+curl -fsSL https://raw.githubusercontent.com/phaneron-robotics/scry/master/install.sh | SCRY_INSTALL_MODE=pip bash       # always use pip + background service
 ```
 
 When it finishes, a QR code appears in the terminal — leave it visible

@@ -78,13 +78,15 @@ one-time approval code in addition to your tap on the phone.
 scry-connect --mtls                       # require TLS client certificates
 scry-connect --require-deadman            # block actions unless a deadman
                                           #   switch is actively held
-scry-connect --audit-log /var/log/scry/audit.jsonl   # log every action taken
+scry-connect --audit-log /var/log/scry/audit.jsonl   # log every write (acting) tool call
 ```
 
 `--mtls` expects TLS to be terminated by your reverse proxy.
 `--require-deadman` refuses any action unless an enable signal has been
 published within the last second — useful for tele-operation safety. The
-audit log records every action (who, what, and whether it was approved).
+audit log records every **write/acting** tool call (the source IP, the
+tool and its arguments, and the outcome — e.g. `ok`, `rejected_no_confirm`,
+`deadman_stale`); read-only tools are not audited.
 
 ## Verifying a connection
 

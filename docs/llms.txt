@@ -3,20 +3,22 @@
 > Scry is a mobile app and a small robot server that together turn any
 > ROS 2 robot into something you can debug by chatting in plain
 > language. The phone does the thinking; the robot just exposes its
-> ROS 2 graph to Scry. No cloud backend, no telemetry.
+> ROS 2 graph to Scry. Robot and chat data never route through a Scry
+> server (only a lightweight account profile does), and there is no
+> telemetry.
 
 Maintained by Phaneron Robotics, Inc.
 
 ## Quick facts
 
 - Android 9 (API 28) or newer. iOS coming soon.
-- ROS 2 Humble, Iron, Jazzy, Kilted, Lyrical, or Rolling.
+- ROS 2 Humble, Jazzy, Kilted, Lyrical, or Rolling.
 - Middleware-agnostic — works with any ROS 2 RMW.
 - Bring your own AI: OpenRouter (one key, 300+ models including Claude,
   GPT, and Gemini, with a free tier) or a local Ollama server for
   offline use.
-- Around one hundred robot capabilities, thirty-one of which change the
-  robot and require explicit on-phone approval before they run.
+- Over a hundred robot capabilities (119), thirty-seven of which change
+  the robot and require explicit on-phone approval before they run.
 - Phone and robot communicate directly over your network on port 5339.
 
 ## Get started

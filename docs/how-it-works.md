@@ -63,12 +63,18 @@ Scry separates two kinds of capability:
 This is the core safety model: the assistant can suggest an action, but
 **you** are always the one who authorizes it.
 
-## No cloud backend
+## No cloud in the data path
 
-Everything runs between your phone, your AI provider, and your robot.
-There is no Scry server collecting your data, no telemetry, and no
-account required to connect to a robot on your own network. For a
-full breakdown of what is stored and where, see the
+Your robot data and your chat content run directly between your phone,
+your AI provider, and your robot — they never route through a Scry
+server, and there's no telemetry.
+
+The one thing that does touch a Scry-operated server is your **account**.
+Scry signs you in (Google, GitHub, or email) and stores your profile —
+name, email, and the optional role/company you enter — in a database we
+operate (Supabase), so it follows you across devices. That account is
+required to use the app, but it carries none of your robot data or
+conversations. For a full breakdown of what is stored and where, see the
 [Privacy policy](legal/privacy.md).
 
 For the full list of what Scry can inspect and do on a robot, see

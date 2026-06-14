@@ -81,9 +81,10 @@ as hardening suggestions rather than vulnerabilities:
   reach the connect's port is assumed to be authorized to talk to the
   ROS graph. Auth tokens prevent casual access but do not replace
   network segmentation.
-- **All AI calls happen on the phone.** API keys never leave the
-  device. Cloud AI providers can see prompts + tool results but never
-  raw credentials.
+- **All AI calls happen on the phone.** There is no Scry/Phaneron AI
+  backend. Your OpenRouter API key is sent only to OpenRouter — in the
+  `Authorization` header, to authenticate your own requests — and never
+  to a Scry server. With local Ollama, nothing leaves your network.
 - **Write operations require explicit user approval.** The phone
   enforces this UI even if the connect is misconfigured to skip it.
 

@@ -12,8 +12,10 @@ What's my robot's health?
 ```
 
 Tap **Send**. Scry checks the robot and renders a health snapshot —
-nodes alive, topics publishing, battery if available, the ROS domain,
-and any recent errors — with a short plain-English summary above it.
+nodes alive, topics publishing, recent ROS error/fatal counts, and a
+diagnostics rollup — with a short plain-English summary above it. (Ask a
+follow-up and Scry can pull related details on demand, like the battery
+level or the ROS domain ID.)
 
 The data is **live**: every answer reflects the robot right now, with no
 caching. A typical reply takes a second or two.
@@ -24,8 +26,10 @@ caching. A typical reply takes a second or two.
 What topics are publishing right now?
 ```
 
-Scry lists the active topics with their type and publish rate (where it
-can measure one). Tap a topic to drill into its details.
+Scry lists the active topics grouped by namespace, each with its type
+and publisher/subscriber counts. Ask about a specific topic (or its
+rate, e.g. "what's the rate on `/odom`?") to drill in — Scry measures
+the publish rate on demand rather than listing it for every topic.
 
 ## 3. Inspect a single topic
 
@@ -40,13 +44,13 @@ and stability instead of flooding you with messages.
 ## 4. Voice input
 
 Tap the **microphone** icon in the composer (between the **+** and the
-send button) and say:
+send button). Your phone's speech-recognition dialog opens — say:
 
 > What was the last warning in `/rosout`?
 
-Release, and the transcript appears in the composer — tap send. Voice is
-transcribed on your phone; no audio leaves the device. See
-[Voice input](../use/voice.md).
+When you stop speaking, Scry sends the recognised text as your message
+automatically. Recognition is handled by your phone's speech service;
+Scry only ever receives the text. See [Voice input](../use/voice.md).
 
 ## 5. Image attachment
 
@@ -105,6 +109,6 @@ You can also flag a reply with the thumbs-down icon, or send a note from
 - **[Use Scry](../use/index.md)** — the full feature tour: monitors,
   fleet view, multi-robot, and connecting remotely.
 - **[How Scry works](../how-it-works.md)** — what the phone and the robot
-  each do, and why there's no cloud backend.
+  each do, and why your robot data never routes through a Scry cloud.
 - **[What Scry can do](../reference/mcp-tools.md)** — everything Scry can
   inspect and act on, on a robot.

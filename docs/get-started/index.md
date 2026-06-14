@@ -1,9 +1,10 @@
 # Get started
 
-The path from zero to "Scry is answering questions about my robot." Five
-short steps, in order:
+The path from zero to "Scry is answering questions about my robot." A
+handful of short steps, in order:
 
-1. **[Get the Scry app](install-android.md)** — install it on your phone.
+1. **[Get the Scry app](install-android.md)** — install it and sign in
+   with a free account (Google, GitHub, or email).
 2. **[Install scry-connect on the robot](install-connect.md)** —
    one-line installer, `pip install`, or Docker. Pick what fits your
    robot.
@@ -19,7 +20,7 @@ short steps, in order:
 | What | Why | Minimum |
 |---|---|---|
 | A phone | Runs the app | Android 9 (API 28). iOS coming soon. |
-| A ROS 2 robot | The thing you're debugging | Humble, Iron, Jazzy, Kilted, Lyrical, or Rolling |
+| A ROS 2 robot | The thing you're debugging | Humble, Jazzy, Kilted, Lyrical, or Rolling |
 | The same network | Phone talks directly to the robot | Wi-Fi without enterprise/captive-portal auth |
 | An AI provider | Powers the assistant | OpenRouter's free tier works to start |
 

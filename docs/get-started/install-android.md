@@ -41,5 +41,16 @@ from your phone over your own network.
 - **A robot** running `scry-connect` — see
   [Install scry-connect on the robot](install-connect.md).
 
-Once the app is installed and your robot is running the connect, head to
-[Pair the phone and robot](pair.md) to link them.
+## Sign in
+
+The first time you open Scry, you'll sign in with a free account. You can
+use **Google**, **GitHub**, an **email magic link**, or **email and
+password**. The account stores your profile — your name, email, and an
+optional role/company — so it follows you across devices.
+
+This account is for sign-in only: your robot data and your chat content
+never route through a Scry server. See the
+[Privacy policy](../legal/privacy.md) for exactly what's stored and where.
+
+Once the app is installed, you're signed in, and your robot is running
+the connect, head to [Pair the phone and robot](pair.md) to link them.

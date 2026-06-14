@@ -1,8 +1,8 @@
 # What Scry can do
 
 This is the full catalogue of what Scry can inspect and do on a robot
-through `scry-connect` — **103 capabilities**, grouped by area. Of
-these, **31 change the robot** and always require your approval on the
+through `scry-connect` — **119 capabilities**, grouped by area. Of
+these, **37 change the robot** and always require your approval on the
 phone; the rest are read-only.
 
 You don't call any of these directly — you ask Scry in plain language
@@ -29,7 +29,8 @@ Scry groups its capabilities into areas — topics, services, nodes,
 parameters, actions, lifecycle, performance, transforms (TF), control,
 components, packages, interfaces, processes, watchers, diagnostics,
 logs, network, bags, doctor, daemon, extensions, build, system, Docker,
-Nav2, and teleop. The tables below list what's in each.
+Nav2, teleop, host shell, and incidents. The tables below list what's in
+each.
 
 ## Tool groups
 
@@ -39,9 +40,9 @@ Nav2, and teleop. The tables below list what's in each.
 | Service | `ros_list_services`, `ros_find_services_by_type`, `ros_service_type`, `ros_service_info`, `ros_service_echo` | `ros_call_service` |
 | Node | `ros_list_nodes`, `ros_list_nodes_with_resources`, `ros_inspect_node` | — |
 | Parameter | `ros_list_parameters`, `ros_get_parameter`, `ros_describe_parameter`, `ros_dump_parameters` | `ros_set_parameter`, `ros_load_parameters`, `ros_delete_parameter` |
-| Action | `ros_list_actions`, `ros_action_type`, `ros_action_info` | `ros_send_action_goal` |
+| Action | `ros_list_actions`, `ros_action_type`, `ros_action_info` | `ros_send_action_goal`, `ros_cancel_action_goal` |
 | Lifecycle | `ros_lifecycle_nodes`, `ros_lifecycle_get`, `ros_lifecycle_list_transitions` | `ros_lifecycle_set` |
-| Package | `ros_list_packages`, `ros_pkg_prefix`, `ros_pkg_executables`, `ros_pkg_xml` | `ros_pkg_create` |
+| Package | `ros_list_packages`, `ros_pkg_prefix`, `ros_pkg_executables`, `ros_pkg_launch_files`, `ros_pkg_xml` | `ros_pkg_create` |
 | Component | `ros_component_list`, `ros_component_types` | `ros_component_load`, `ros_component_unload`, `ros_component_standalone` |
 | ros2_control | `ros_control_list_controllers`, `ros_control_list_controller_types`, `ros_control_list_hardware_components`, `ros_control_list_hardware_interfaces`, `ros_control_view_controller_chains` | `ros_control_load_controller`, `ros_control_unload_controller`, `ros_control_set_controller_state`, `ros_control_switch_controllers`, `ros_control_reload_controller_libraries`, `ros_control_cleanup_controller`, `ros_control_set_hardware_component_state` |
 | Daemon | `ros_daemon_status` | `ros_daemon_start`, `ros_daemon_stop` |
@@ -49,18 +50,19 @@ Nav2, and teleop. The tables below list what's in each.
 | Doctor / WTF | `ros_doctor`, `ros_doctor_hello` | — |
 | Extensions | `ros_extensions` | — |
 | Interface | `ros_list_interfaces`, `ros_show_interface` | — |
-| Bag | `ros_bag_info` | — |
+| Bag | `ros_bag_info`, `ros_bag_list`, `ros_bag_record_status` | `ros_bag_record_start`, `ros_bag_record_stop` |
 | DDS / env | `ros_get_dds_info`, `ros_get_dds_env`, `ros_network_interfaces` | — |
-| Diagnostics | `ros_get_diagnostics`, `ros_check_health`, `ros_get_recent_logs`, `ros_liveness` | — |
+| Diagnostics | `ros_get_diagnostics`, `ros_check_health`, `ros_get_recent_logs`, `ros_liveness`, `ros_graph_diff` | — |
 | TF | `ros_tf_frames`, `ros_tf_lookup` | — |
 | Watchers | `ros_watch_topic`, `ros_watch_diagnostics`, `ros_watch_node`, `ros_wait_for_topic` | — |
 | Process | `ros_list_processes`, `ros_list_system_processes`, `ros_system_processes`, `ros_tail_process` | `ros_run_node`, `ros_run_launch`, `ros_run_script`, `ros_restart_launched`, `ros_kill_process` |
-| Scratch | `ros_list_scratch_files` | `ros_write_scratch_file` |
-| Workspace | `ros_list_workspaces` | `ros_colcon_build` |
+| Build | `ros_list_scratch_files`, `ros_list_workspaces`, `ros_export_file` | `ros_write_scratch_file`, `ros_colcon_build` |
 | System | `ros_system_info` | — |
 | Behaviour tree | `ros_bt_list_sources`, `ros_bt_get_active_tree`, `ros_bt_status` | — |
 | Teleop | — | `ros_teleop_start`, `ros_teleop_set`, `ros_teleop_stop` |
 | Docker | `ros_docker_status`, `ros_docker_inspect`, `ros_docker_logs` | — |
+| Host shell | `ros_shell_read`, `ros_query_shell_job`, `ros_list_shell_jobs` | `ros_shell_exec`, `ros_kill_shell_job` |
+| Incidents | `ros_search_incidents`, `ros_get_incident` | `ros_save_incident` |
 
 ---
 
@@ -87,7 +89,7 @@ Get the message type of a topic. Equivalent to `ros2 topic type`.
 Topic metadata + (with `verbose`) QoS profile of every endpoint. Equivalent to `ros2 topic info [-v]`.
 
 ### `ros_read_topic`
-Subscribe, collect N messages, unsubscribe. Images become 512×512 base64 JPEG thumbnails. Equivalent to `ros2 topic echo --once/--times N`.
+Subscribe, collect N messages, unsubscribe. Images are downscaled to fit within 512×512 (aspect ratio preserved) and returned as base64 JPEG. Equivalent to `ros2 topic echo --once/--times N`.
 
 ### `ros_read_scene`
 Bundle a single top-down scene snapshot from up to 5 layers — occupancy grid map, pose, laser scan, planned path, pose array. The Android side auto-renders the result as a composed `SceneSnapshot` (map + base_link silhouette + scan dots + path + scale bar). Use for any *contextual* spatial question ("where am I", "show me the path on the map", "what does the robot see") instead of N separate `ros_read_topic` calls.
@@ -156,6 +158,9 @@ Equivalents of `ros2 action list/type/info`.
 ### `ros_send_action_goal` — **write**
 Send a goal, wait for the result, optionally capture feedback. Equivalent to `ros2 action send_goal [-f]`.
 
+### `ros_cancel_action_goal` — **write**
+Cancel an in-flight goal on an action server.
+
 ---
 
 ## Lifecycle tools
@@ -170,8 +175,8 @@ Trigger a transition. Valid: `configure`, `cleanup`, `activate`, `deactivate`, `
 
 ## Package tools
 
-### `ros_list_packages` · `ros_pkg_prefix` · `ros_pkg_executables` · `ros_pkg_xml`
-Discover installed packages, their install prefixes, `lib/<pkg>` executables, and `package.xml` contents.
+### `ros_list_packages` · `ros_pkg_prefix` · `ros_pkg_executables` · `ros_pkg_launch_files` · `ros_pkg_xml`
+Discover installed packages, their install prefixes, `lib/<pkg>` executables, the launch files a package ships, and `package.xml` contents.
 
 ### `ros_pkg_create` — **write**
 Scaffold a new package on disk. Equivalent to `ros2 pkg create --build-type {ament_cmake,ament_python,cmake}`.
@@ -190,7 +195,7 @@ Grow/shrink a running composition pipeline. `standalone` launches a throwaway co
 
 ## ros2_control tools
 
-Full 13-verb surface for the `controller_manager` framework. All target `/controller_manager` by default; pass `controller_manager` to point at another one.
+Full 12-verb surface for the `controller_manager` framework. All target `/controller_manager` by default; pass `controller_manager` to point at another one.
 
 ### Read
 - `ros_control_list_controllers` — per-controller state (`inactive`/`active`), types, claimed interfaces.
@@ -230,7 +235,7 @@ Send one datagram. Tagged write because it emits network traffic.
 ## Doctor / WTF tools
 
 ### `ros_doctor`
-Run `ros2 doctor` with all switches: `report`, `report_failed`, `include_warnings`, `exclude_packages`. Returns the full report plus parsed warning/error lines.
+Run `ros2 doctor` with all switches: `report`, `report_failed`, `include_warnings`, `exclude_packages`. Returns a diagnostic summary plus parsed warning/error lines and the return code; the full raw report is included (as a `report` field) only when `report=true` — it's omitted by default to avoid overflowing the model context.
 
 ### `ros_doctor_hello`
 End-to-end DDS pub/sub round-trip check. Equivalent to `ros2 doctor hello`.
@@ -253,8 +258,13 @@ Equivalents of `ros2 interface list/show`.
 
 ## Bag tools
 
-### `ros_bag_info`
-Inspect a bag directory on the robot's filesystem (pinned under `$SCRY_BAG_ROOT`, default `~/ros2_bags`). Recording / playback are deferred.
+All bag operations are pinned under `$SCRY_BAG_ROOT` (default `~/ros2_bags`).
+
+### `ros_bag_info` · `ros_bag_list` · `ros_bag_record_status`
+Inspect a single bag directory, list the bags found under the bag root, and check whether a recording is currently in progress. Read-only.
+
+### `ros_bag_record_start` · `ros_bag_record_stop` — **write**
+Start or stop a `ros2 bag record` session against a chosen set of topics. Tagged write because recording spawns a process and writes to disk. Playback is deferred.
 
 ---
 
@@ -284,8 +294,8 @@ Enumerate IPv4/IPv6 addresses on every interface — primary DDS discovery triag
 
 ## Diagnostics tools
 
-### `ros_get_diagnostics` · `ros_check_health` · `ros_get_recent_logs` · `ros_liveness`
-Read the latest `/diagnostics`, roll up a one-shot health summary, tail `/rosout` with filters, or grab a cheap heartbeat (`ros_liveness` — `/tf`, `/clock`, `/rosout` error counts, node-churn over 5 min; safe to poll once a second).
+### `ros_get_diagnostics` · `ros_check_health` · `ros_get_recent_logs` · `ros_liveness` · `ros_graph_diff`
+Read the latest `/diagnostics`, roll up a one-shot health summary, tail `/rosout` with filters, grab a cheap heartbeat (`ros_liveness` — `/tf`, `/clock`, `/rosout` error counts, node-churn over 5 min; safe to poll once a second), or snapshot the ROS graph and report what changed since the last snapshot (`ros_graph_diff` — added/removed nodes, topics, and services).
 
 `ros_check_health` is the **single MCP call the Android dashboard makes** to populate its Graph / Liveness / Diagnostics sections, so its return shape is wider than the name suggests. Fields:
 
@@ -350,26 +360,18 @@ ROS-related process on the host.
 
 ---
 
-## Scratch-file tools
+## Build tools
 
-Drop a small file (Python relay node, ad-hoc launch, YAML snippet) under
-`/tmp/scry-scratch/<session>/` so a subsequent `ros_run_*` can use it.
+Scratch files, workspaces, and file export all live in the `build` area.
 
 ### Read
-- `ros_list_scratch_files` — enumerate.
+- `ros_list_scratch_files` — enumerate the scratch files dropped under `/tmp/scry-scratch/<session>/` (Python relay node, ad-hoc launch, YAML snippet) so a subsequent `ros_run_*` can use them.
+- `ros_list_workspaces` — list colcon workspaces the connect can detect. Auto-discovery uses `$SCRY_BUILD_WORKSPACES` (override), `$COLCON_PREFIX_PATH`, and the usual install conventions.
+- `ros_export_file` — read a file from one of the connect's allowed roots (the bag root, scratch dir, and any path in `$SCRY_EXPORT_ROOTS`) so the phone can download it. Confined to those roots — it can't read arbitrary paths.
 
 ### Write
-- `ros_write_scratch_file` — create / overwrite.
-
----
-
-## Workspace tools
-
-### `ros_list_workspaces` (read)
-List colcon workspaces the connect can detect. Auto-discovery uses `$SCRY_BUILD_WORKSPACES` (override), `$COLCON_PREFIX_PATH`, and the usual install conventions.
-
-### `ros_colcon_build` — **write**
-Run `colcon build --packages-select <pkg…>` in a workspace. The package list is required — Scry must name exactly what it's building.
+- `ros_write_scratch_file` — create / overwrite a scratch file.
+- `ros_colcon_build` — run `colcon build --packages-select <pkg…>` in a workspace. The package list is required — Scry must name exactly what it's building.
 
 ---
 
@@ -412,6 +414,42 @@ Useful when the robot runs Nav2 / drivers in containers.
 
 ---
 
+## Host shell tools
+
+Running a shell command on the robot is the one capability that's **off
+by default**. In the connect's default open mode the shell tools are
+disabled outright; they only become available when the operator starts
+the connect with `--allow-open-exec` (or runs in token / mTLS mode).
+Even then, every command still pauses for your tap-to-approve on the
+phone, exactly like any other action — and writes are recorded in the
+audit log when one is configured. This is a deliberate trade-off: it's
+the highest-blast-radius capability Scry has, so it's gated more tightly
+than anything else.
+
+### Read
+- `ros_shell_read` — run a read-only command and return its output.
+- `ros_query_shell_job` · `ros_list_shell_jobs` — check on, and list, long-running shell jobs the connect launched.
+
+### Write (needs confirmation, and `--allow-open-exec`)
+- `ros_shell_exec` — run a shell command on the host.
+- `ros_kill_shell_job` — terminate a tracked shell job.
+
+---
+
+## Incident tools
+
+A small on-robot store of solved problems, so Scry can recognise an
+issue it (or you) has diagnosed before and recall the fix.
+
+### Read
+- `ros_search_incidents` — search past incidents by symptom.
+- `ros_get_incident` — fetch one incident's full record.
+
+### Write
+- `ros_save_incident` — record a new incident and its resolution.
+
+---
+
 ## MCP resources
 
 In addition to tools, the connect exposes read-only resources:
@@ -420,7 +458,7 @@ In addition to tools, the connect exposes read-only resources:
 |-----|-------------|
 | `ros://system/info` | ROS distro, hostname, domain ID, middleware, uptime |
 | `ros://topics/{name}/schema` | Message type definition for a topic |
-| `ros://nodes/{name}/info` | Cached node introspection |
+| `ros://nodes/{name}/info` | Node introspection (publishers, subscribers, services) — recomputed live from the ROS graph on each read |
 
 ---
 
@@ -446,6 +484,9 @@ entirely on your phone — they never go to the robot:
 | Live panels | Embed a short live sensor / plot / scene / camera panel right in the chat |
 | Live scene | Combine a map, pose, laser scan, and path into one live view |
 | Plans | Render a multi-step diagnostic checklist with a verdict |
-| Background monitors | Watch a topic in the background and alert you when a condition trips (see [Background monitors](../use/monitors.md)) |
+| Background monitors | Watch a topic field in the background and alert you when a threshold trips (see [Background monitors](../use/monitors.md)) |
 | Fleet overview | Ping every saved robot and show a per-robot status card |
+| Fleet query & diff | Ask one question across your whole fleet, or diff which topics each robot is running |
+| Fleet health snapshot | Roll up a one-shot health summary for every saved robot at once |
 | Robot comparison | Put two robots side by side on the metrics you choose |
+| Parallel sub-agents | For a big question, fan out up to four read-only helpers in parallel and merge what they find (any fix is still proposed for your approval) |

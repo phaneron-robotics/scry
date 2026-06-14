@@ -35,9 +35,9 @@ read them and they are excluded from the system backup.
 
 | Category | What | Where |
 |---|---|---|
-| **Robot connection profiles** | host, port, optional pairing token, network name | Encrypted on-device database |
-| **Chat history** | your messages, Scry's responses, and the results it read from the robot | Encrypted on-device database |
-| **API keys** | the AI provider key you paste in (OpenRouter, or a per-vendor key) | Encrypted on-device storage (AES-256, backed by the Android Keystore) |
+| **Robot connection profiles** | host, port, optional pairing token, network name | App-private SQLite database (not encrypted; protected by Android's app sandbox) |
+| **Chat history** | your messages, Scry's responses, and the results it read from the robot | App-private SQLite database (not encrypted; protected by Android's app sandbox) |
+| **API keys** | the OpenRouter API key you paste in | Encrypted on-device storage (AES-256-GCM, master key in the Android Keystore) |
 | **App preferences** | provider/model choice, Ollama URL, UI toggles | Encrypted on-device storage |
 | **Cached attachments** | screenshots and gallery imports you attach to chat messages | App cache; cleared by the system under low-storage pressure |
 
@@ -117,7 +117,7 @@ After auth completes, the **profile screen** asks for two more things:
   newsletter).
 
 **Where it lives:** a Supabase project we run in the US-West
-(`us-west-2`, Oregon) region. Two tables are involved:
+(`us-west-2`, Oregon) region. The tables involved:
 
 - `auth.users` — managed by Supabase. Holds your email, hashed password
   (only if you signed up with email/password), and the OAuth provider
@@ -125,6 +125,8 @@ After auth completes, the **profile screen** asks for two more things:
 - `public.profiles` — joined 1:1 to `auth.users` by user ID. Holds
   the role/company you typed on the profile screen plus app version,
   Android SDK level, and locale.
+- `public.feedback` — populated only when you send optional feedback
+  (see §3.4). Holds the feedback you submitted, linked to your user ID.
 
 Encryption: TLS 1.3 in transit, AES-256 at rest, password hashes via
 bcrypt (Supabase Auth default). **Row-level security** ensures the app
@@ -135,23 +137,45 @@ not any other user's.
 controller. The Supabase DPA covers their handling obligations under
 GDPR Art. 28.
 
-**What we never send to our backend:** chat content, robot data
-(topics, nodes, services, parameters), your API keys for Anthropic /
-OpenAI / Google, screenshots, voice transcripts. None of that touches
-our database. See §3.1 and §3.2 for where it goes instead.
+**What we never send to our backend:** your full chat content, robot
+data (topics, nodes, services, parameters), your OpenRouter API key,
+screenshots, and voice transcripts. None of that touches our database.
+See §3.1 and §3.2 for where it goes instead. The one exception is the
+optional feedback you choose to send — see §3.4.
 
-**After the first connect:** when you successfully pair your first
-robot, we patch your profile row with a `first_connect_meta` JSON
-blob containing the robot's ROS distribution, RMW implementation, and
-the number of nodes/topics it advertises. We never include the
-robot's hostname, IP, or any topic contents.
+### 3.4 Optional feedback (only when you send it)
+
+Scry has an optional feedback path you trigger yourself: the thumbs-up /
+thumbs-down icons under an assistant reply, and the **Settings →
+Feedback** form. Nothing here is sent unless you tap one of those.
+
+When you do, we send the following to the same Supabase project (the
+`public.feedback` table):
+
+- For a thumbs rating: your **preceding question** (the prompt text,
+  capped at 8 KB) and the **names of the tools** Scry called that turn —
+  e.g. `ros_list_topics`. We do **not** send the tool arguments, the
+  tool results, the assistant's reply text, or any attachment content.
+- For the Feedback form: the category, sentiment, and any comment you
+  typed.
+
+This excerpt helps us tell whether a given kind of question worked. It's
+the only chat-derived text that ever reaches our backend, and only ever
+because you asked us to look at that reply.
+
+**After the first connect (planned):** in a future version, on your
+first successful robot pair we may record a `first_connect_meta` blob
+on your profile row — the robot's ROS distribution, RMW implementation,
+and node/topic counts, never the hostname, IP, or any topic contents.
+This is **not** collected today.
 
 **Deletion:** email **info@phaneronrobotics.com** asking us to
 delete your account. We honour deletion requests within 30 days;
 usually within 24 hours. The deletion is a SQL `DELETE` on the
-`auth.users` row, which cascades to your `profiles` row. Your session
-JWT becomes invalid on next API call; the app pushes you back to the
-sign-in screen.
+`auth.users` row, which cascades to your `profiles` row **and to any
+feedback rows you submitted** (including the chat excerpts they
+contain). Your session JWT becomes invalid on next API call; the app
+pushes you back to the sign-in screen.
 
 **Lawful basis:** Contract (GDPR Art. 6(1)(b)) — the account is
 necessary to provide the service. You can terminate the contract at
@@ -165,15 +189,22 @@ can sign back in later on this or any other device.
 
 ## 4. Permissions
 
-Scry requests the following Android permissions. Each is requested at
-the point you first use the feature, not at install time.
+Scry requests the following Android permissions. The feature
+permissions (camera, microphone) are requested the first time you use
+the feature; notifications are requested at app launch on Android 13+.
+None are requested at install time.
 
 | Permission | What it's for |
 |---|---|
 | `INTERNET` + `ACCESS_NETWORK_STATE` + `ACCESS_WIFI_STATE` | Talking to scry-connect on your LAN and to AI providers (when you select a cloud provider). |
 | `CAMERA` | Optional: take a photo to attach to a chat message ("look at this LED — what's it indicating?"), and scan the pairing QR shown by scry-connect. |
-| `RECORD_AUDIO` | Optional: voice-to-text input in chat. Routed to Android's on-device `SpeechRecognizer` — we don't read or store the audio. |
-| `READ_MEDIA_IMAGES` | Optional: pick an image from your gallery to attach to a chat message. We only read the image you explicitly select. |
+| `RECORD_AUDIO` | Optional: voice-to-text input in chat. Routed to your phone's system speech-recognition dialog (Android `RecognizerIntent`) — we only receive the recognized text and never read or store the audio. |
+| `POST_NOTIFICATIONS` | Optional (Android 13+): surface background-monitor alerts as system notifications. Requested at app launch; in-app chat alerts still work if you deny it. |
+
+Picking an image from your gallery uses Android's **Photo Picker**, and
+attaching a file uses the system document picker — both grant Scry a
+one-shot read of only the item you select, so **no storage / media
+permission** is requested.
 
 We do not request location, contacts, always-on microphone, foreground
 service permissions, advertising ID, or any other ambient-collection
@@ -218,8 +249,10 @@ You have three layers of control depending on which data you mean:
    requests within 30 days. Identity verification is via reply from the
    email address on the row.
 3. **Chat data sent to your chosen AI provider** (§3.2): we never see
-   this and can't act on it. Exercise rights directly against
-   Anthropic, OpenAI, or Google per their privacy policies.
+   this and can't act on it. Exercise rights against OpenRouter — and
+   the model vendor your chosen model routes to — per their privacy
+   policies. (Optional feedback you send us, §3.4, is the one piece of
+   chat-derived text we hold, and it's covered by layer 2 above.)
 
 We do not sell, share for cross-context behavioural advertising, or
 otherwise monetise the data described in §3.3. There is no such
@@ -231,14 +264,17 @@ disclosure to opt out of.
 
 - API keys are encrypted at rest with Android EncryptedSharedPreferences
   (AES-256-GCM, master key in the Android Keystore).
-- Chat history, robot profiles, and attachments live in app-private
-  storage (`getFilesDir()` / `getCacheDir()`) — not readable by other
-  apps under Android's sandbox.
-- All requests to AI providers go over TLS (`network_security_config.xml`
-  enforces this).
-- We allow plain HTTP for LAN traffic to scry-connect, because most
-  ROS 2 deployments don't have a TLS terminator on the robot. If you
-  expose scry-connect outside the LAN, put a TLS proxy in front.
+- Chat history and robot profiles live in the app-private SQLite
+  database (`databases/scry.db`); cached and downloaded files
+  (attachments, map tiles) live in `getCacheDir()`. Both are inside the
+  Android app-private sandbox and not readable by other apps. These
+  stores are not separately encrypted beyond the sandbox. (Downloaded
+  ROS bags use `getExternalFilesDir()` under `Android/data/` so they can
+  be shared off the device.)
+- Requests to the cloud AI provider (OpenRouter) use HTTPS. LAN traffic
+  to scry-connect is allowed over plain HTTP, because most ROS 2
+  deployments don't have a TLS terminator on the robot — if you expose
+  scry-connect outside the LAN, put a TLS proxy in front.
 
 ---
 
