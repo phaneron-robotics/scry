@@ -43,7 +43,7 @@
   <!-- Footer strip -->
   <rect x="0" y="586" width="1200" height="1" fill="#3A3835"/>
   <g transform="translate(96, 605)" font-family="Inter, system-ui, sans-serif">
-    <text font-size="16" fill="#9C9A8D">phaneron-robotics.github.io/scry-web</text>
+    <text font-size="16" fill="#9C9A8D">phaneron-robotics.github.io/scry</text>
     <text x="908" font-size="16" fill="#6B6B5E">Phaneron Robotics, Inc.</text>
   </g>
 </svg>
