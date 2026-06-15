@@ -12,6 +12,9 @@
 #   humble · jazzy · kilted · lyrical · rolling   (default: jazzy)
 # Images are multi-arch (amd64 + arm64), so the same file works on x86,
 # Jetson, and Raspberry Pi 4+.
+#
+# GPU: optional — uncomment the GPU blocks below to give the container
+# CUDA access (needs the NVIDIA Container Toolkit on the host).
 
 services:
   scry-connect:
@@ -35,6 +38,23 @@ services:
       # Auth: `open` (token-free, trusted LAN) or `token`. See remote docs.
       - SCRY_AUTH_MODE=${SCRY_AUTH_MODE:-open}
       - SCRY_TOKEN=${SCRY_TOKEN:-}
+      # --- GPU (NVIDIA) ---------------------------------------------------
+      # Uncomment if the container needs CUDA (e.g. GPU-backed ROS nodes, or
+      # running on a Jetson). The connect itself doesn't need a GPU.
+      # - NVIDIA_VISIBLE_DEVICES=all
+      # - NVIDIA_DRIVER_CAPABILITIES=all
+
+    # --- GPU (NVIDIA) -----------------------------------------------------
+    # Requires the NVIDIA Container Toolkit on the host. Uncomment to expose
+    # the host GPU(s) to the container. On Jetson with the NVIDIA Docker
+    # runtime, you can instead add `runtime: nvidia` here.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all          # or e.g. `device_ids: ["0"]`
+    #           capabilities: [gpu]
 
     volumes:
       - scry_config:/home/scry/.config/scry   # pairing + settings, survives restarts

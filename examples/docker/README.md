@@ -33,6 +33,11 @@ A healthy server reports `"status":"ok"`.
   don't need it.
 - **Images are multi-arch** (amd64 + arm64) — same file on x86, Jetson,
   and Raspberry Pi 4+.
+- **GPU (optional):** the connect itself needs no GPU, but uncomment the
+  GPU blocks in `docker-compose.yml` if the container runs CUDA-backed
+  ROS nodes or sits on a Jetson. Requires the
+  [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+  on the host.
 - **Upgrades:** `docker compose pull && docker compose up -d`. Pinning to
   a release (e.g. `:1.2.1-jazzy`) instead of a floating distro tag gives
   you reproducible deployments.
