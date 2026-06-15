@@ -554,13 +554,13 @@ body {
 
 .scry-badge img {
   display: block;
-  height: 46px;
+  height: 58px;
   width: auto;
 }
 
 @media screen and (max-width: 600px) {
   .scry-badge img {
-    height: 42px;
+    height: 50px;
   }
   .scry-hero {
     padding: 2.2rem 0.8rem 1.8rem;
