@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Scry GitHub README banner — 1024×320.
+  Warm graphite + olive, matching BRAND.md (scry-brand/BRAND.md):
+    surface #1C1B19 · bars #6B6B5E · olive accent #A3B86C
+    text #E8E4D9 (primary) / #9C9A8D (secondary)
+  The mark is the 9-bar "s" from scry-icon-1024.svg, redrawn so it
+  renders crisp at any size and stays locked to brand tokens.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="320" viewBox="0 0 1024 320" role="img" aria-label="Scry — AI-first debugging for ROS 2 robots">
+  <title>Scry — AI-first debugging for ROS 2 robots</title>
+
+  <rect width="1024" height="320" fill="#1C1B19"/>
+
+  <!-- soft olive glow behind the title block -->
+  <defs>
+    <radialGradient id="glow" cx="0.74" cy="0.45" r="0.55">
+      <stop offset="0%"   stop-color="#A3B86C" stop-opacity="0.12"/>
+      <stop offset="60%"  stop-color="#A3B86C" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#A3B86C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="320" fill="url(#glow)"/>
+
+  <!-- Left: the Scry mark (584×542 source box, scaled ~0.33 → ~193px) -->
+  <g transform="translate(96, 72) scale(0.33)">
+    <rect x="42"  y="0"   width="500" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="0"   y="62"  width="417" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="0"   y="124" width="292" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="0"   y="186" width="208" height="46" rx="14" fill="#A3B86C"/>
+    <rect x="42"  y="248" width="500" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="375" y="310" width="208" height="46" rx="14" fill="#A3B86C"/>
+    <rect x="292" y="372" width="292" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="167" y="434" width="417" height="46" rx="14" fill="#6B6B5E"/>
+    <rect x="42"  y="496" width="500" height="46" rx="14" fill="#6B6B5E"/>
+  </g>
+
+  <!-- Right: wordmark + tagline -->
+  <g font-family="'Helvetica Neue', Arial, sans-serif">
+    <text x="340" y="150" font-size="96" font-weight="600" fill="#E8E4D9" letter-spacing="-2">Scry<tspan fill="#A3B86C">.</tspan></text>
+    <text x="346" y="205" font-size="30" font-weight="600" fill="#A3B86C" letter-spacing="0.5">AI for ROS 2 robots</text>
+    <text x="346" y="248" font-size="22" fill="#9C9A8D">Debug your robot from your phone. Chat. Inspect. Diagnose.</text>
+  </g>
+</svg>
