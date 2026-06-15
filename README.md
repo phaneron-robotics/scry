@@ -136,18 +136,6 @@ Scry sends inference through whichever you choose; it stores **only your credent
 
 ---
 
-## Project structure
-
-Scry is split across focused repos under [**phaneron-robotics**](https://github.com/phaneron-robotics):
-
-| Repo | What it is | Release |
-|---|---|---|
-| [**scry-app**](https://github.com/phaneron-robotics/scry-app) | The Android app (Kotlin / Jetpack Compose) | [![app](https://img.shields.io/github/v/release/phaneron-robotics/scry-app?label=%20&color=A3B86C)](https://github.com/phaneron-robotics/scry-app/releases) |
-| [**scry-connect**](https://github.com/phaneron-robotics/scry-connect) | The robot-side MCP server (Python / rclpy) | [![pypi](https://img.shields.io/pypi/v/scry-connect?label=%20&color=A3B86C)](https://pypi.org/project/scry-connect/) |
-| [**scry**](https://github.com/phaneron-robotics/scry) (this repo) | Umbrella project + [docs site](https://phaneron-robotics.github.io/scry/) + simulator | |
-
----
-
 ## Documentation
 
 Everything lives at **[phaneron-robotics.github.io/scry](https://phaneron-robotics.github.io/scry/)**:
@@ -178,6 +166,6 @@ Apache-2.0.
 <div align="center">
 <br>
 
-Made by the <a href="https://www.phaneronrobotics.com/">Phaneron Robotics</a> team.
+Made with 💚 by the <a href="https://www.phaneronrobotics.com/">Phaneron Robotics</a> team.
 
 </div>
