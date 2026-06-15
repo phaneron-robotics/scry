@@ -1,0 +1,45 @@
+# scry-connect sidecar — drop-in Docker Compose for a real robot.
+#
+# Runs the connect in a small container alongside the rest of your ROS 2
+# stack on `network_mode: host`, so it shares the host's DDS bus and sees
+# every existing node without extra wiring.
+#
+# Quick start:
+#   ROS_DISTRO=jazzy docker compose up -d      # pick your distro
+#   docker compose exec scry-connect scry-connect --print-qr   # pairing QR
+#
+# One image, every ROS 2 distro — set ROS_DISTRO (or edit .env) to one of:
+#   humble · jazzy · kilted · lyrical · rolling   (default: jazzy)
+# Images are multi-arch (amd64 + arm64), so the same file works on x86,
+# Jetson, and Raspberry Pi 4+.
+
+services:
+  scry-connect:
+    image: ghcr.io/phaneron-robotics/scry-connect:${ROS_DISTRO:-jazzy}
+    container_name: scry-connect
+    restart: unless-stopped
+
+    # Host networking so the connect joins the robot's existing DDS bus.
+    network_mode: host
+    # ipc/pid host let the connect see shared-memory DDS and walk /proc to
+    # map ROS nodes to their OS processes (the app's Processes view). Drop
+    # `pid: host` if you don't need process inspection.
+    ipc: host
+    pid: host
+
+    environment:
+      # Must match the rest of your robot's ROS 2 stack.
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # Port the connect listens on (LAN-only by default).
+      - SCRY_PORT=${SCRY_PORT:-5339}
+      # Auth: `open` (token-free, trusted LAN) or `token`. See remote docs.
+      - SCRY_AUTH_MODE=${SCRY_AUTH_MODE:-open}
+      - SCRY_TOKEN=${SCRY_TOKEN:-}
+
+    volumes:
+      - scry_config:/home/scry/.config/scry   # pairing + settings, survives restarts
+      - scry_audit:/var/log/scry              # audit log of every action
+
+volumes:
+  scry_config:
+  scry_audit:

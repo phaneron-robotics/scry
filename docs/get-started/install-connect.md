@@ -60,7 +60,16 @@ phone, scan the QR or enter the robot's IP address.
 
 ## Method 3 — Docker
 
-For containerized deployments, add the connect to your Compose stack:
+For containerized deployments, run the connect as a sidecar alongside
+your robot's ROS 2 stack. A ready-to-use Compose file lives in the repo
+under [`examples/docker/`](https://github.com/phaneron-robotics/scry/tree/master/examples/docker):
+
+```bash
+ROS_DISTRO=jazzy docker compose up -d
+docker compose exec scry-connect scry-connect --print-qr   # pairing QR
+```
+
+Or inline it into your own stack:
 
 ```yaml
 services:
@@ -72,6 +81,9 @@ services:
     restart: unless-stopped
     environment:
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - SCRY_PORT=${SCRY_PORT:-5339}
+      - SCRY_AUTH_MODE=${SCRY_AUTH_MODE:-open}
+      - SCRY_TOKEN=${SCRY_TOKEN:-}
     volumes:
       - scry_config:/home/scry/.config/scry
       - scry_audit:/var/log/scry
@@ -84,6 +96,7 @@ volumes:
 | Image tag | Resolves to |
 |---|---|
 | `humble`, `jazzy`, `kilted`, `lyrical`, `rolling` | Latest connect on that ROS distro |
+| `1.2.1-jazzy`, `1.2.1-humble`, … | A specific release pinned to a distro |
 | `latest` | Same as `jazzy` |
 
 Images are multi-architecture (`amd64` + `arm64`), so they run on x86
