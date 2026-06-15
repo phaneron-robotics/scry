@@ -12,7 +12,7 @@ Report privately through either:
    [`scry`](https://github.com/phaneron-robotics/scry) repo, go to
    `Security` → `Report a vulnerability`. The code repos are private, so
    this repo is the place to file all reports.
-2. **Email**: [security@phaneronrobotics.com](mailto:security@phaneronrobotics.com).
+2. **Email**: [info@phaneronrobotics.com](mailto:info@phaneronrobotics.com).
 
 Please include what the issue is, how to reproduce it, the affected
 component (the Scry app, `scry-connect`, or the docs site), and the
