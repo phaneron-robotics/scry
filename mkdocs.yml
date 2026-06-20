@@ -56,6 +56,7 @@ nav:
       - Choose your AI: get-started/choose-ai.md
       - Pair the phone and robot: get-started/pair.md
       - First session: get-started/first-session.md
+  - Demos: demos.md
   - Use Scry:
       - use/index.md
       - Chat with Scry: use/chat.md

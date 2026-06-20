@@ -695,3 +695,53 @@ body {
 [data-md-color-scheme="default"] .md-typeset .mermaid strong {
   color: var(--scry-light-text);
 }
+
+/* ── Demo video embeds ──────────────────────────────────────────────
+   Responsive 16:9 YouTube iframes laid out in an auto-fitting grid.
+   Used on the Demos page (docs/demos.md). */
+
+.scry-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.4rem;
+  margin: 1.2rem 0 2rem;
+}
+
+.scry-video {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 16:9 responsive frame — the padding-top trick keeps the aspect ratio
+   while the iframe fills it absolutely. */
+.scry-video__frame {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--scry-surface-raised);
+  border: 1px solid var(--md-default-bg-color--lighter);
+}
+
+.scry-video__frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.scry-video__caption {
+  margin: 0.55rem 0.1rem 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--scry-text-secondary);
+}
+
+.scry-video__caption strong {
+  display: block;
+  font-weight: 600;
+  color: var(--scry-text-primary);
+  margin-bottom: 0.1rem;
+}

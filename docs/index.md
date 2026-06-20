@@ -15,6 +15,7 @@ and monitor diagnostics by chatting with an on-device AI assistant.
 </p>
 <div class="scry-hero__actions">
   <a href="get-started/" class="md-button md-button--primary">Get started</a>
+  <a href="demos/" class="md-button">Watch demos</a>
   <a href="how-it-works/" class="md-button">How it works</a>
 </div>
 <div class="scry-hero__badges">
@@ -115,6 +116,14 @@ approval first. [Read more →](how-it-works.md)
 <span class="scry-eyebrow">Where to go next</span>
 
 <div class="grid cards" markdown>
+
+-   **Demos**
+
+    Watch short walkthroughs of real Scry sessions — chat-driven
+    debugging, live visualizations, browsing the ROS 2 graph, and
+    fleet view.
+
+    [Watch demos](demos.md)
 
 -   **Get started**
 
