@@ -30,6 +30,45 @@ Debugging a ROS 2 robot usually means crouching at a laptop with `rviz`, `rqt`, 
 
 ---
 
+## Demos
+
+Short walkthroughs of Scry in action. Click any thumbnail to watch on YouTube, or browse the [full playlist](https://www.youtube.com/playlist?list=PLyorFDAYdKhSwHnjT1jQQy-Y-6_6wA7Kq).
+
+### AI chat & debugging
+
+| Debugging logs | Multi-step planning | Manual approvals |
+|---|---|---|
+| [<img src="https://img.youtube.com/vi/iM--2T5NY4A/hqdefault.jpg" width="260">](https://youtu.be/iM--2T5NY4A) | [<img src="https://img.youtube.com/vi/URhuoBcetH8/hqdefault.jpg" width="260">](https://youtu.be/URhuoBcetH8) | [<img src="https://img.youtube.com/vi/Vc45jC7-fRA/hqdefault.jpg" width="260">](https://youtu.be/Vc45jC7-fRA) |
+| Ask about your robot's logs in plain English. | Watch the AI build and follow a plan. | The AI proposes, you approve each write. |
+
+| Chat walkthrough | Parameters by chat | Camera feed in chat |
+|---|---|---|
+| [<img src="https://img.youtube.com/vi/V2PRj4fiPBo/hqdefault.jpg" width="260">](https://youtu.be/V2PRj4fiPBo) | [<img src="https://img.youtube.com/vi/zIMt096yqfY/hqdefault.jpg" width="260">](https://youtu.be/zIMt096yqfY) | [<img src="https://img.youtube.com/vi/ltE9LzJ3rTM/hqdefault.jpg" width="260">](https://youtu.be/ltE9LzJ3rTM) |
+| Debug a robot end to end through chat. | Read and set ROS 2 parameters by asking. | Bring a live camera feed into the chat. |
+
+### Browse ROS 2 entities
+
+| Browse every ROS 2 entity |
+|---|
+| [<img src="https://img.youtube.com/vi/hjJ-Rxm-khI/hqdefault.jpg" width="260">](https://youtu.be/hjJ-Rxm-khI) |
+| Topics, nodes, services, actions, lifecycle, params, TF, logs — searchable, one tap to detail. |
+
+### Live visualizations
+
+| Camera, LiDAR, plots & 3D scene |
+|---|
+| [<img src="https://img.youtube.com/vi/dGKybk0HN8E/hqdefault.jpg" width="260">](https://youtu.be/dGKybk0HN8E) |
+| Sensor streams render live on a dedicated Viz surface. |
+
+### Robot dashboard & fleet
+
+| Robot dashboard + chat | Multi-robot fleet view |
+|---|---|
+| [<img src="https://img.youtube.com/vi/Xv22xBuKhKA/hqdefault.jpg" width="260">](https://youtu.be/Xv22xBuKhKA) | [<img src="https://img.youtube.com/vi/IS0pWNuMoMY/hqdefault.jpg" width="260">](https://youtu.be/IS0pWNuMoMY) |
+| An honest, at-a-glance health view, paired with chat. | Switch between robots or diagnose the whole fleet. |
+
+---
+
 ## How it works
 
 ```mermaid
@@ -107,45 +146,6 @@ Bring your own key, or run **fully offline**. Provider and model are picked from
 | [**Ollama**](https://ollama.com/) | **Run a model locally**, on your own machine. No cloud, no key, fully offline. |
 
 Scry sends inference through whichever you choose; it stores **only your credentials**, never your robot or chat data.
-
----
-
-## Demos
-
-Short walkthroughs of Scry in action. Click any thumbnail to watch on YouTube, or browse the [full playlist](https://www.youtube.com/playlist?list=PLyorFDAYdKhSwHnjT1jQQy-Y-6_6wA7Kq).
-
-### AI chat & debugging
-
-| Debugging logs | Multi-step planning | Manual approvals |
-|---|---|---|
-| [<img src="https://img.youtube.com/vi/iM--2T5NY4A/hqdefault.jpg" width="260">](https://youtu.be/iM--2T5NY4A) | [<img src="https://img.youtube.com/vi/URhuoBcetH8/hqdefault.jpg" width="260">](https://youtu.be/URhuoBcetH8) | [<img src="https://img.youtube.com/vi/Vc45jC7-fRA/hqdefault.jpg" width="260">](https://youtu.be/Vc45jC7-fRA) |
-| Ask about your robot's logs in plain English. | Watch the AI build and follow a plan. | The AI proposes, you approve each write. |
-
-| Chat walkthrough | Parameters by chat | Camera feed in chat |
-|---|---|---|
-| [<img src="https://img.youtube.com/vi/V2PRj4fiPBo/hqdefault.jpg" width="260">](https://youtu.be/V2PRj4fiPBo) | [<img src="https://img.youtube.com/vi/zIMt096yqfY/hqdefault.jpg" width="260">](https://youtu.be/zIMt096yqfY) | [<img src="https://img.youtube.com/vi/ltE9LzJ3rTM/hqdefault.jpg" width="260">](https://youtu.be/ltE9LzJ3rTM) |
-| Debug a robot end to end through chat. | Read and set ROS 2 parameters by asking. | Bring a live camera feed into the chat. |
-
-### Browse ROS 2 entities
-
-| Browse every ROS 2 entity |
-|---|
-| [<img src="https://img.youtube.com/vi/hjJ-Rxm-khI/hqdefault.jpg" width="260">](https://youtu.be/hjJ-Rxm-khI) |
-| Topics, nodes, services, actions, lifecycle, params, TF, logs — searchable, one tap to detail. |
-
-### Live visualizations
-
-| Camera, LiDAR, plots & 3D scene |
-|---|
-| [<img src="https://img.youtube.com/vi/dGKybk0HN8E/hqdefault.jpg" width="260">](https://youtu.be/dGKybk0HN8E) |
-| Sensor streams render live on a dedicated Viz surface. |
-
-### Robot dashboard & fleet
-
-| Robot dashboard + chat | Multi-robot fleet view |
-|---|---|
-| [<img src="https://img.youtube.com/vi/Xv22xBuKhKA/hqdefault.jpg" width="260">](https://youtu.be/Xv22xBuKhKA) | [<img src="https://img.youtube.com/vi/IS0pWNuMoMY/hqdefault.jpg" width="260">](https://youtu.be/IS0pWNuMoMY) |
-| An honest, at-a-glance health view, paired with chat. | Switch between robots or diagnose the whole fleet. |
 
 ---
 
