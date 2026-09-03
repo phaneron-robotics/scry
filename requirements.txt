@@ -1,6 +1,6 @@
 # MkDocs and plugins needed to build the Scry docs site.
 # Use pinned versions for reproducible CI builds.
 mkdocs==1.6.1
-mkdocs-material==9.5.49
+mkdocs-material==9.7.7
 pymdown-extensions==10.21.3
 pygments==2.20.0
